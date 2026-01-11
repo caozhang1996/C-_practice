@@ -82,25 +82,6 @@ rosa_install_executable(
   sigsegv
 )
 
-
-# observer
-add_executable(observer src/observer.cpp)
-
-target_include_directories(observer PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-target_link_libraries(observer
-  PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  observer
-)
-
-
 # thread_pool
 add_executable(thread_pool src/thread_pool.cpp src/main.cpp)
 
@@ -172,24 +153,6 @@ rosa_install_executable(
 # rosa_install_executable(
 #   opencv_node
 # )
-
-
-# crtp_node
-add_executable(crtp_node src/crtp_node.cpp)
-
-target_include_directories(crtp_node PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-target_link_libraries(crtp_node
-  PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  crtp_node
-)
 
 
 # mixin_node
@@ -295,23 +258,6 @@ target_link_libraries(if_switch_node
 
 rosa_install_executable(
   if_switch_node
-)
-
-# visitor_pattern_node
-add_executable(visitor_pattern_node src/visitor_pattern_node.cpp)
-
-target_include_directories(visitor_pattern_node PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
-target_link_libraries(visitor_pattern_node
-  PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  visitor_pattern_node
 )
 
 
