@@ -1,0 +1,16 @@
+<package format="3">
+  <name>design_patterns</name>
+  <version>0.0.0</version>
+  <description>This is the design_patterns package</description>
+  <maintainer email="zhang.cao@ubtrobot.com">caozhang</maintainer>
+  <license>No License</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+
+
+</package>
