@@ -24,7 +24,8 @@ namespace template_function_1
   // 返回"公共类型"的模板函数
   template <typename T1,
             typename T2,
-            typename RT = decltype(true ? T1() : T2())>
+            typename RT = decltype(true ? std::declval<T1>()
+                                        : std::declval<T2>())>
   RT max2(const T1& a, const T2& b)
   {
     return a > b ? a : b;
