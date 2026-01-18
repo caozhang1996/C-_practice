@@ -9,6 +9,9 @@
 #pragma once
 
 #include <iostream>
+#include <string>
+
+using namespace std::literals;
 
 namespace template_class_1
 {
@@ -58,7 +61,13 @@ namespace template_class_1_test
         4};，否则编译器无法自动推导出 N。
      */
     array arr1{1, 2, 3, 4};
+    array arr2{1.1, 2.2, 3.3};
+    array arr3{'a', 'b', 'c'};
+    array arr4{"hello"s, "world"s};
 
     arr1.print();  // 输出: 1 2 3 4
+    arr2.print();  // 输出: 1.1 2.2 3.3
+    arr3.print();  // 输出: a b c
+    arr4.print();  // 输出: hello world
   }
 }  // namespace template_class_1_test
