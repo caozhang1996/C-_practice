@@ -56,7 +56,7 @@ namespace template_function_3
   {
     RT nums[] = {args...};
 
-    // RT{} 这里不能是 0，否则转换为 int 类型，会丢失精度
+    // RT{} 这里不能是 0，否则转换为 int 类型，会丢失精度, 而应该是 RT 的默认值
     return std::accumulate(std::begin(nums), std::end(nums), RT{});
   }
 
