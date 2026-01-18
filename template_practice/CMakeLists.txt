@@ -3,9 +3,6 @@ project(template_practice)
 
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(rosa_cmake REQUIRED)
-
-
 add_executable(template src/main.cpp)
 
 target_include_directories(template PUBLIC
@@ -17,8 +14,8 @@ target_link_libraries(template
   PUBLIC
 )
 
-rosa_install_executable(
-  template
+install(TARGETS template
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-rosa_package()
+install(DIRECTORY include/ DESTINATION include)

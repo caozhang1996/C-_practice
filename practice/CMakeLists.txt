@@ -3,13 +3,7 @@ project(practice)
 
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(rosa_cmake REQUIRED)
 # find_package(OpenCV 4.5 REQUIRED)
-
-rosa_find_package(
-  rosa
-)
-
 
 # sequence_node
 add_executable(sequence_node src/sequence_node.cpp)
@@ -21,11 +15,6 @@ target_include_directories(sequence_node PUBLIC
 
 target_link_libraries(sequence_node
   PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  sequence_node
 )
 
 add_executable(odd_sequence_node src/odd_sequence_node.cpp)
@@ -37,7 +26,6 @@ target_include_directories(odd_sequence_node PUBLIC
 
 target_link_libraries(odd_sequence_node
   PUBLIC
-  rosa::rosa
 )
 
 
@@ -51,11 +39,6 @@ target_include_directories(align_node PUBLIC
 
 target_link_libraries(align_node
   PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  align_node
 )
 
 
@@ -74,13 +57,9 @@ target_compile_options(sigsegv PRIVATE
 
 target_link_libraries(sigsegv
   PUBLIC
-  rosa::rosa
   -rdynamic
 )
 
-rosa_install_executable(
-  sigsegv
-)
 
 # thread_pool
 add_executable(thread_pool src/thread_pool.cpp src/main.cpp)
@@ -92,11 +71,6 @@ target_include_directories(thread_pool PUBLIC
 
 target_link_libraries(thread_pool
   PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  thread_pool
 )
 
 
@@ -110,11 +84,6 @@ target_include_directories(learning_thread PUBLIC
 
 target_link_libraries(learning_thread
   PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  learning_thread
 )
 
 
@@ -128,13 +97,7 @@ target_include_directories(jthread_node PUBLIC
 
 target_link_libraries(jthread_node
   PUBLIC
-  rosa::rosa
 )
-
-rosa_install_executable(
-  jthread_node
-)
-
 
 # # opencv_node
 # add_executable(opencv_node src/opencv_node.cpp)
@@ -146,12 +109,7 @@ rosa_install_executable(
 
 # target_link_libraries(opencv_node
 #   PUBLIC
-#   rosa::rosa
 #   ${OpenCV_LIBS}
-# )
-
-# rosa_install_executable(
-#   opencv_node
 # )
 
 
@@ -165,11 +123,6 @@ target_include_directories(mixin_node PUBLIC
 
 target_link_libraries(mixin_node
   PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  mixin_node
 )
 
 
@@ -183,11 +136,6 @@ target_include_directories(future_node PUBLIC
 
 target_link_libraries(future_node
   PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  future_node
 )
 
 
@@ -201,11 +149,6 @@ target_include_directories(shared_future_node PUBLIC
 
 target_link_libraries(shared_future_node
   PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  shared_future_node
 )
 
 
@@ -218,12 +161,7 @@ target_include_directories(operator_node PUBLIC
 )
 
 target_link_libraries(operator_node
-  PUBLIC
-  rosa::rosa
-)
-
-rosa_install_executable(
-  operator_node
+  PUBLIC 
 )
 
 # string_view_node
@@ -235,13 +173,9 @@ target_include_directories(string_view_node PUBLIC
 )
 
 target_link_libraries(string_view_node
-  PUBLIC
-  rosa::rosa
+  PUBLIC 
 )
 
-rosa_install_executable(
-  string_view_node
-)
 
 # if_switch_node
 add_executable(if_switch_node src/if_switch_node.cpp)
@@ -252,13 +186,24 @@ target_include_directories(if_switch_node PUBLIC
 )
 
 target_link_libraries(if_switch_node
-  PUBLIC
-  rosa::rosa
+  PUBLIC 
 )
 
-rosa_install_executable(
-  if_switch_node
+install(TARGETS sequence_node 
+                odd_sequence_node 
+                align_node 
+                sigsegv 
+                thread_pool 
+                learning_thread 
+                jthread_node 
+                mixin_node 
+                future_node 
+                shared_future_node 
+                operator_node 
+                string_view_node 
+                if_switch_node
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
+install(DIRECTORY include/ DESTINATION include)
 
-rosa_package()

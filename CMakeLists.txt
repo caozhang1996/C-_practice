@@ -1,0 +1,3 @@
+add_subdirectory(template_practice)
+add_subdirectory(design_patterns)
+add_subdirectory(practice)

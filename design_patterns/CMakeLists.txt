@@ -1,16 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(design_patterns)
 
-find_package(rosa_cmake REQUIRED)
-
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# rosa_find_package(
-#  <dependency1>
-#  <dependency2>
-#  ...
-#)
-
 # crtp
 add_executable(crtp src/crtp.cpp)
 
@@ -47,11 +37,8 @@ target_link_libraries(visitor
   PUBLIC
 )
 
-rosa_install_executable(
-  crtp
-  observer
-  visitor
+install(TARGETS crtp observer visitor
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-
-rosa_package()
+install(DIRECTORY include/ DESTINATION include)
