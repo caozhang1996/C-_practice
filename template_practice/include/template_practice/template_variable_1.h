@@ -25,6 +25,9 @@ namespace template_variable_1
   template <std::size_t... values>
   constexpr std::size_t aa[] = {values...};
 
+  template <typename T>
+  bool b = std::is_integral_v<T>;
+
 }  // namespace template_variable_1
 
 using namespace template_variable_1;
@@ -33,13 +36,13 @@ namespace template_variable_1_test
 {
   void test()
   {
-    std::cout << "pi<int>: " << v1<int> << std::endl;
-    std::cout << "pi<double>: " << v1<double> << std::endl;
-    std::cout << "pi<float>: " << v1<float> << std::endl;
+    std::cout << "v1<int>: " << v1<int> << std::endl;
+    std::cout << "v1<double>: " << v1<double> << std::endl;
+    std::cout << "v1<float>: " << v1<float> << std::endl;
 
-    std::cout << "v<>: " << v2<> << std::endl;
-    std::cout << "v<20>: " << v2<20> << std::endl;
-    std::cout << "v<50>: " << v2<50> << std::endl;
+    std::cout << "v2<>: " << v2<> << std::endl;
+    std::cout << "v2<20>: " << v2<20> << std::endl;
+    std::cout << "v2<50>: " << v2<50> << std::endl;
 
     for (std::size_t v : aa<1, 2, 3, 4, 5>)
     {
@@ -50,5 +53,9 @@ namespace template_variable_1_test
     std::cout << std::boolalpha
               << std::is_same_v<decltype(aa<1, 2, 3, 4, 5>),
                                 const std::size_t[5]> << std::endl;
+
+    std::cout << std::boolalpha << b<double> << std::endl;
+    std::cout << std::boolalpha << b<double> << std::endl;
+    std::cout << std::boolalpha << b<int> << std::endl;
   }
 }  // namespace template_variable_1_test
