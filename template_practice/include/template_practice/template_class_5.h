@@ -1,5 +1,5 @@
 /**
- * @file template_class_4.h
+ * @file template_class_5.h
  * @author cao zhang
  * @brief 对类的成员函数模板进行特化
  * @version 0.1
