@@ -5,6 +5,7 @@
 #include "template_practice/template_class_3.h"
 #include "template_practice/template_class_4.h"
 #include "template_practice/template_class_5.h"
+#include "template_practice/template_class_6.h"
 #include "template_practice/template_function_1.h"
 #include "template_practice/template_function_2.h"
 #include "template_practice/template_function_3.h"
@@ -60,6 +61,11 @@ int main(int argc, char** argv)
   std::cout << "###############template_class_5_test###############"
             << std::endl;
   template_class_5_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_class_6_test###############"
+            << std::endl;
+  template_class_6_test::test();
   std::cout << std::endl;
 
   std::cout << "###############template_variable_1_test###############"
