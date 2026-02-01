@@ -53,6 +53,7 @@ int main(int argc, char** argv)
   std::cout << "###############template_variable_1_test###############"
             << std::endl;
   template_variable_1_test::test();
+  template_variable_1_test::testFullySpecialized();
   std::cout << std::endl;
 
   std::cout << "###############template_static_member_1_test###############"

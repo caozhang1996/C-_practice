@@ -30,6 +30,27 @@ namespace template_variable_1
 
 }  // namespace template_variable_1
 
+// 变量模板全特化
+namespace template_variable_1
+{
+  template <typename T>
+  constexpr const char* s = "??";
+
+  // void 类型全特化
+  template <>
+  constexpr const char* s<void> = "void";
+
+  // char 类型全特化
+  template <>
+  constexpr const char* s<char> = "char";
+
+  template <typename T>
+  constexpr const bool is_void_v = false;
+
+  template <>
+  constexpr const bool is_void_v<void> = true;
+}  // namespace template_variable_1
+
 using namespace template_variable_1;
 
 namespace template_variable_1_test
@@ -57,5 +78,17 @@ namespace template_variable_1_test
     std::cout << std::boolalpha << b<double> << std::endl;
     std::cout << std::boolalpha << b<double> << std::endl;
     std::cout << std::boolalpha << b<int> << std::endl;
+  }
+
+  void testFullySpecialized()
+  {
+    std::cout << "s<int>: " << s<int> << std::endl;
+    std::cout << "s<void>: " << s<void> << std::endl;
+    std::cout << "s<char>: " << s<char> << std::endl;
+
+    std::cout << "is_void_v<int>: "
+              << template_variable_1::is_void_v<int> << std::endl;
+    std::cout << "is_void_v<void>: "
+              << template_variable_1::is_void_v<void> << std::endl;
   }
 }  // namespace template_variable_1_test
