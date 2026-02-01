@@ -3,6 +3,7 @@
 #include "template_practice/template_class_1.h"
 #include "template_practice/template_class_2.h"
 #include "template_practice/template_class_3.h"
+#include "template_practice/template_class_4.h"
 #include "template_practice/template_function_1.h"
 #include "template_practice/template_function_2.h"
 #include "template_practice/template_function_3.h"
@@ -40,7 +41,7 @@ int main(int argc, char** argv)
   template_class_1_test::test();
   std::cout << std::endl;
 
-  std::cout << "###############template_class__test###############"
+  std::cout << "###############template_class_2_test###############"
             << std::endl;
   template_class_2_test::test();
   std::cout << std::endl;
@@ -48,6 +49,11 @@ int main(int argc, char** argv)
   std::cout << "###############template_class_3_test###############"
             << std::endl;
   template_class_3_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_class_4_test###############"
+            << std::endl;
+  template_class_4_test::test();
   std::cout << std::endl;
 
   std::cout << "###############template_variable_1_test###############"
