@@ -16,18 +16,18 @@ int main(int argc, char** argv)
 {
   std::cout << "###############template_function_1_test###############"
             << std::endl;
-  template_function_1_test::test_max();
-  template_function_1_test::test_print();
+  template_function_1_test::testMax();
+  template_function_1_test::testPrint();
   std::cout << std::endl;
 
   std::cout << "###############template_function_2_test###############"
             << std::endl;
-  template_function_2_test::test_process();
+  template_function_2_test::testProcess();
   std::cout << std::endl;
 
   std::cout << "###############template_function_3_test###############"
             << std::endl;
-  template_function_3_test::test_print_all();
+  template_function_3_test::testPrintAll();
   std::cout << std::endl;
 
   std::cout << "###############template_function_4_test###############"

@@ -44,7 +44,7 @@ using namespace template_function_1;
 
 namespace template_function_1_test
 {
-  void test_max()
+  void testMax()
   {
     std::cout << max(1, 2) << std::endl;
     std::cout << max<double>(3.0, 1) << std::endl;  // 没有推导，显示指明了类型
@@ -58,7 +58,7 @@ namespace template_function_1_test
     std::cout << max2(1, 2.5) << std::endl;  // RT 被推导为 double
   }
 
-  void test_print()
+  void testPrint()
   {
     print(100);                            // 使用默认类型参数 int
     print(3.14);                           // T 被推导为 double

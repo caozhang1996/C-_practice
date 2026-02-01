@@ -18,30 +18,30 @@ using namespace std::string_literals;
 namespace template_function_3
 {
   template <typename T>
-  void print_one(const T& t)
+  void printOne(const T& t)
   {
     std::cout << t << std::endl;
   }
 
   template <typename T, typename... Args>
-  void print_one(const T& t, const Args&... args)
+  void printOne(const T& t, const Args&... args)
   {
     std::cout << t << " ";
-    print_one(args...);
+    printOne(args...);
   }
 
   // 打印可变参数，每个参数之间用空格分隔，最后一个元素没有多余空格
   template <typename... Args>
-  void print_all(const Args&... args)
+  void printAll(const Args&... args)
   {
-    print_one(args...);
+    printOne(args...);
     std::cout << sizeof...(args) << " elements printed."
               << std::endl;  // sizeof... 获取参数个数
   }
 
   // 另一种实现方式，使用 fold 表达式
   template <typename... Args>
-  void print_all_fold(const Args&... args)
+  void printAllFold(const Args&... args)
   {
     ((std::cout << args << " "), ...);  // 使用 fold 表达式和逗号运算符
     std::cout << std::endl;
@@ -66,10 +66,10 @@ using namespace template_function_3;
 
 namespace template_function_3_test
 {
-  void test_print_all()
+  void testPrintAll()
   {
-    print_all(1, 2, 3.14, "hello"s);
-    print_all_fold(1, 2, 3.14, "hello"s);
+    printAll(1, 2, 3.14, "hello"s);
+    printAllFold(1, 2, 3.14, "hello"s);
 
     std::cout << "Sum: " << sum(1, 2, 3.5, 4.0f) << std::endl;  // 输出 10.5
   }

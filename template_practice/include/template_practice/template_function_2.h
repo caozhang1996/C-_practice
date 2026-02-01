@@ -47,7 +47,7 @@ using namespace template_function_2;
 
 namespace template_function_2_test
 {
-  void test_process()
+  void testProcess()
   {
     process(42);       // 调用整数版本
     process(3.14);     // 调用通用模板版本
