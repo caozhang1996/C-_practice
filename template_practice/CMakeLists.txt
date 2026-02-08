@@ -3,7 +3,7 @@ project(template_practice)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(template src/main.cpp)
+add_executable(template src/main.cpp src/template_class_8.cpp)
 
 target_include_directories(template PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
