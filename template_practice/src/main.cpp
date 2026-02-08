@@ -12,6 +12,7 @@
 #include "template_practice/template_function_4.h"
 #include "template_practice/template_static_member_1.h"
 #include "template_practice/template_variable_1.h"
+#include "template_practice/template_variable_2.h"
 
 using namespace std::string_literals;
 
@@ -72,6 +73,12 @@ int main(int argc, char** argv)
             << std::endl;
   template_variable_1_test::test();
   template_variable_1_test::testFullySpecialized();
+  std::cout << std::endl;
+
+  std::cout << "###############template_variable_2_test###############"
+            << std::endl;
+  template_variable_2_test::testOne();
+  template_variable_2_test::testTwo();
   std::cout << std::endl;
 
   std::cout << "###############template_static_member_1_test###############"
