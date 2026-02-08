@@ -37,7 +37,19 @@ target_link_libraries(visitor
   PUBLIC
 )
 
-install(TARGETS crtp observer visitor
+# state
+add_executable(state src/state.cpp)
+
+target_include_directories(state PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(state
+  PUBLIC
+)
+
+install(TARGETS crtp observer visitor state
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
