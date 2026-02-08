@@ -1,5 +1,6 @@
 #include <type_traits>
 
+#include "template_practice/is_same_v.h"
 #include "template_practice/template_class_1.h"
 #include "template_practice/template_class_2.h"
 #include "template_practice/template_class_3.h"
@@ -90,6 +91,10 @@ int main(int argc, char** argv)
   std::cout << "###############template_static_member_1_test###############"
             << std::endl;
   template_static_member_1_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############is_same_v_test###############" << std::endl;
+  my_test::test();
   std::cout << std::endl;
 
   return 0;
