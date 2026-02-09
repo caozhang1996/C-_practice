@@ -49,7 +49,7 @@ target_link_libraries(state
   PUBLIC
 )
 
-# state
+# audio_player
 add_executable(audio_player src/audio_player.cpp)
 
 target_include_directories(audio_player PUBLIC
