@@ -1,289 +1,317 @@
 #include <algorithm>
 #include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
 
-// 仅前向声明上下文类（避免循环依赖）
-class AudioPlayer;
+#include "design_patterns/audio_player.h"
 
-// 状态基类（抽象类）- 完整定义
-class State
+// ==================== State 基类构造函数实现 ====================
+State::State(std::shared_ptr<AudioPlayer> p) : player_(p)
 {
- protected:
-  AudioPlayer* player;
+}
 
- public:
-  explicit State(AudioPlayer* p) : player(p) {}
-  virtual ~State() = default;
-
-  // 只声明纯虚函数，实现放在所有类定义之后
-  virtual void clickLock() = 0;
-  virtual void clickPlay() = 0;
-  virtual void clickNext() = 0;
-  virtual void clickPrevious() = 0;
-};
-
-// 音频播放器类（上下文）- 完整定义
-class AudioPlayer
+// 初始化默认状态为 ReadyState
+void AudioPlayer::init()
 {
- private:
-  std::unique_ptr<State> state;
-  int volume{50};
-  std::vector<std::string> playlist{"Song 1", "Song 2", "Song 3"};
-  std::string currentSong{""};
-  bool isPlaying{false};
+  changeState(std::unique_ptr<State>(new ReadyState(shared_from_this())));
+  std::cout << "[AudioPlayer] Initialized with ReadyState" << std::endl;
+}
 
- public:
-  AudioPlayer();  // 构造函数声明，实现放最后
+// ==================== AudioPlayer 成员函数实现 ====================
+void AudioPlayer::changeState(std::unique_ptr<State> new_state)
+{
+  state_ = std::move(new_state);
+  std::cout << "[State Changed] Current state updated" << std::endl;
+}
 
-  // 状态切换核心方法
-  void changeState(std::unique_ptr<State> newState)
+void AudioPlayer::clickLock()
+{
+  state_->clickLock();
+}
+void AudioPlayer::clickPlay()
+{
+  state_->clickPlay();
+}
+void AudioPlayer::clickNext()
+{
+  state_->clickNext();
+}
+void AudioPlayer::clickPrevious()
+{
+  state_->clickPrevious();
+}
+
+void AudioPlayer::startPlayback()
+{
+  if (!is_playing_ && !current_song_.empty())
   {
-    state = std::move(newState);
-    std::cout << "[State Changed] Current state updated" << std::endl;
+    is_playing_ = true;
+    std::cout << "[Playback] Start playing: " << current_song_ << std::endl;
   }
-
-  // UI 交互方法（委托给状态）
-  void clickLock() { state->clickLock(); }
-  void clickPlay() { state->clickPlay(); }
-  void clickNext() { state->clickNext(); }
-  void clickPrevious() { state->clickPrevious(); }
-
-  // 核心业务方法（供状态类调用）
-  void startPlayback()
+  else if (current_song_.empty())
   {
-    if (!isPlaying && !currentSong.empty())
-    {
-      isPlaying = true;
-      std::cout << "[Playback] Start playing: " << currentSong << std::endl;
-    }
-    else if (currentSong.empty())
-    {
-      currentSong = playlist[0];
-      isPlaying = true;
-      std::cout << "[Playback] Start playing first song: " << currentSong
-                << std::endl;
-    }
-  }
-
-  void stopPlayback()
-  {
-    if (isPlaying)
-    {
-      isPlaying = false;
-      std::cout << "[Playback] Stop playing: " << currentSong << std::endl;
-    }
-  }
-
-  void nextSong()
-  {
-    auto it = std::find(playlist.begin(), playlist.end(), currentSong);
-    if (it != playlist.end() && std::next(it) != playlist.end())
-    {
-      currentSong = *std::next(it);
-      std::cout << "[Song] Switch to next song: " << currentSong << std::endl;
-      if (isPlaying) startPlayback();
-    }
-    else
-    {
-      std::cout << "[Song] Already at last song" << std::endl;
-    }
-  }
-
-  void previousSong()
-  {
-    auto it = std::find(playlist.begin(), playlist.end(), currentSong);
-    if (it != playlist.begin())
-    {
-      currentSong = *std::prev(it);
-      std::cout << "[Song] Switch to previous song: " << currentSong
-                << std::endl;
-      if (isPlaying) startPlayback();
-    }
-    else
-    {
-      std::cout << "[Song] Already at first song" << std::endl;
-    }
-  }
-
-  void fastForward(int seconds)
-  {
-    std::cout << "[Playback] Fast forward " << seconds << " seconds"
+    current_song_ = play_list_[0];
+    is_playing_ = true;
+    std::cout << "[Playback] Start playing first song: " << current_song_
               << std::endl;
   }
+}
 
-  void rewind(int seconds)
+void AudioPlayer::stopPlayback()
+{
+  if (is_playing_)
   {
-    std::cout << "[Playback] Rewind " << seconds << " seconds" << std::endl;
+    is_playing_ = false;
+    std::cout << "[Playback] Stop playing: " << current_song_ << std::endl;
   }
+}
 
-  // 供状态类判断播放状态
-  bool isPlayingState() const { return isPlaying; }
-  void setCurrentSong(const std::string& song) { currentSong = song; }
-};
-
-// 先声明所有状态类（仅声明，不定义）
-class LockedState;
-class ReadyState;
-class PlayingState;
-
-// ==================== 状态类完整定义 ====================
-// 1. 就绪状态（ReadyState）
-class ReadyState : public State
+void AudioPlayer::nextSong()
 {
- public:
-  using State::State;
+  auto it = std::find(play_list_.begin(), play_list_.end(), current_song_);
+  if (it != play_list_.end() && std::next(it) != play_list_.end())
+  {
+    current_song_ = *std::next(it);
+    std::cout << "[Song] Switch to next song: " << current_song_ << std::endl;
+    if (is_playing_) startPlayback();
+  }
+  else
+  {
+    std::cout << "[Song] Already at last song" << std::endl;
+  }
+}
 
-  // 实现纯虚函数（此时所有状态类已声明，AudioPlayer 已完整定义）
-  void clickLock() override;
-  void clickPlay() override;
-  void clickNext() override;
-  void clickPrevious() override;
-};
-
-// 2. 播放状态（PlayingState）
-class PlayingState : public State
+void AudioPlayer::previousSong()
 {
- public:
-  using State::State;
+  auto it = std::find(play_list_.begin(), play_list_.end(), current_song_);
+  if (it != play_list_.begin())
+  {
+    current_song_ = *std::prev(it);
+    std::cout << "[Song] Switch to previous song: " << current_song_
+              << std::endl;
+    if (is_playing_) startPlayback();
+  }
+  else
+  {
+    std::cout << "[Song] Already at first song" << std::endl;
+  }
+}
 
-  void clickLock() override;
-  void clickPlay() override;
-  void clickNext() override;
-  void clickPrevious() override;
-};
-
-// 3. 锁定状态（LockedState）
-class LockedState : public State
+void AudioPlayer::fastForward(int seconds)
 {
- public:
-  using State::State;
+  std::cout << "[Playback] Fast forward " << seconds << " seconds" << std::endl;
+}
 
-  void clickLock() override;
-  void clickPlay() override;
-  void clickNext() override;
-  void clickPrevious() override;
-};
+void AudioPlayer::rewind(int seconds)
+{
+  std::cout << "[Playback] Rewind " << seconds << " seconds" << std::endl;
+}
 
-// ==================== 状态类方法实现（关键！放所有类定义之后）
-// ==================== ReadyState 方法实现
+bool AudioPlayer::isPlayingState() const
+{
+  return is_playing_;
+}
+void AudioPlayer::setCurrentSong(const std::string& song)
+{
+  current_song_ = song;
+}
+
+// ==================== 具体状态类成员函数实现 ====================
+// 1. ReadyState 实现
 void ReadyState::clickLock()
 {
-  std::cout << "[ReadyState] Click Lock: Locking player" << std::endl;
-  player->changeState(std::unique_ptr<State>(new LockedState(player)));
+  // 锁定 weak_ptr，检查 AudioPlayer 是否有效
+  if (auto p = player_.lock())
+  {
+    std::cout << "[ReadyState] Click Lock: Locking player" << std::endl;
+    p->changeState(std::unique_ptr<State>(new LockedState(p)));
+  }
+  else
+  {
+    std::cout << "[ReadyState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void ReadyState::clickPlay()
 {
-  std::cout << "[ReadyState] Click Play: Starting playback" << std::endl;
-  player->startPlayback();
-  player->changeState(std::unique_ptr<State>(new PlayingState(player)));
+  if (auto p = player_.lock())
+  {
+    std::cout << "[ReadyState] Click Play: Starting playback" << std::endl;
+    p->startPlayback();
+    p->changeState(std::unique_ptr<State>(new PlayingState(p)));
+  }
+  else
+  {
+    std::cout << "[ReadyState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void ReadyState::clickNext()
 {
-  std::cout << "[ReadyState] Click Next: Switch to next song" << std::endl;
-  player->nextSong();
+  if (auto p = player_.lock())
+  {
+    std::cout << "[ReadyState] Click Next: Switch to next song" << std::endl;
+    p->nextSong();
+  }
+  else
+  {
+    std::cout << "[ReadyState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void ReadyState::clickPrevious()
 {
-  std::cout << "[ReadyState] Click Previous: Switch to previous song"
-            << std::endl;
-  player->previousSong();
+  if (auto p = player_.lock())
+  {
+    std::cout << "[ReadyState] Click Previous: Switch to previous song"
+              << std::endl;
+    p->previousSong();
+  }
+  else
+  {
+    std::cout << "[ReadyState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
-// PlayingState 方法实现
+// 2. PlayingState 实现
 void PlayingState::clickLock()
 {
-  std::cout << "[PlayingState] Click Lock: Locking player" << std::endl;
-  player->changeState(std::unique_ptr<State>(new LockedState(player)));
+  if (auto p = player_.lock())
+  {
+    std::cout << "[PlayingState] Click Lock: Locking player" << std::endl;
+    p->changeState(std::unique_ptr<State>(new LockedState(p)));
+  }
+  else
+  {
+    std::cout << "[PlayingState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void PlayingState::clickPlay()
 {
-  std::cout << "[PlayingState] Click Play: Stopping playback" << std::endl;
-  player->stopPlayback();
-  player->changeState(std::unique_ptr<State>(new ReadyState(player)));
+  if (auto p = player_.lock())
+  {
+    std::cout << "[PlayingState] Click Play: Stopping playback" << std::endl;
+    p->stopPlayback();
+    p->changeState(std::unique_ptr<State>(new ReadyState(p)));
+  }
+  else
+  {
+    std::cout << "[PlayingState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void PlayingState::clickNext()
 {
-  std::cout
-      << "[PlayingState] Click Next: Double click detected, switch to next song"
-      << std::endl;
-  player->nextSong();
+  if (auto p = player_.lock())
+  {
+    std::cout << "[PlayingState] Click Next: Double click detected, switch to "
+                 "next song"
+              << std::endl;
+    p->nextSong();
+  }
+  else
+  {
+    std::cout << "[PlayingState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void PlayingState::clickPrevious()
 {
-  std::cout << "[PlayingState] Click Previous: Double click detected, switch "
-               "to previous song"
-            << std::endl;
-  player->previousSong();
-}
-
-// LockedState 方法实现
-void LockedState::clickLock()
-{
-  std::cout << "[LockedState] Click Lock: Unlocking player" << std::endl;
-  if (player->isPlayingState())
+  if (auto p = player_.lock())
   {
-    player->changeState(std::unique_ptr<State>(new PlayingState(player)));
+    std::cout << "[PlayingState] Click Previous: Double click detected, switch "
+                 "to previous song"
+              << std::endl;
+    p->previousSong();
   }
   else
   {
-    player->changeState(std::unique_ptr<State>(new ReadyState(player)));
+    std::cout << "[PlayingState] AudioPlayer has been destroyed!" << std::endl;
+  }
+}
+
+// 3. LockedState 实现
+void LockedState::clickLock()
+{
+  if (auto p = player_.lock())
+  {
+    std::cout << "[LockedState] Click Lock: Unlocking player" << std::endl;
+    if (p->isPlayingState())
+    {
+      p->changeState(std::unique_ptr<State>(new PlayingState(p)));
+    }
+    else
+    {
+      p->changeState(std::unique_ptr<State>(new ReadyState(p)));
+    }
+  }
+  else
+  {
+    std::cout << "[LockedState] AudioPlayer has been destroyed!" << std::endl;
   }
 }
 
 void LockedState::clickPlay()
 {
-  std::cout << "[LockedState] Click Play: Player is locked, do nothing"
-            << std::endl;
+  if (auto p = player_.lock())
+  {
+    std::cout << "[LockedState] Click Play: Player is locked, do nothing"
+              << std::endl;
+  }
+  else
+  {
+    std::cout << "[LockedState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void LockedState::clickNext()
 {
-  std::cout << "[LockedState] Click Next: Player is locked, do nothing"
-            << std::endl;
+  if (auto p = player_.lock())
+  {
+    std::cout << "[LockedState] Click Next: Player is locked, do nothing"
+              << std::endl;
+  }
+  else
+  {
+    std::cout << "[LockedState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 void LockedState::clickPrevious()
 {
-  std::cout << "[LockedState] Click Previous: Player is locked, do nothing"
-            << std::endl;
-}
-
-// ==================== AudioPlayer 构造函数实现（最后） ====================
-AudioPlayer::AudioPlayer()
-{
-  changeState(std::unique_ptr<State>(new ReadyState(this)));
+  if (auto p = player_.lock())
+  {
+    std::cout << "[LockedState] Click Previous: Player is locked, do nothing"
+              << std::endl;
+  }
+  else
+  {
+    std::cout << "[LockedState] AudioPlayer has been destroyed!" << std::endl;
+  }
 }
 
 // ==================== 测试代码 ====================
 int main()
 {
-  AudioPlayer player;
+  std::shared_ptr<AudioPlayer> player_ = std::make_shared<AudioPlayer>();
+  player_->init();
 
   std::cout << "===== Step 1: Click Play =====" << std::endl;
-  player.clickPlay();
+  player_->clickPlay();
 
   std::cout << "\n===== Step 2: Click Next =====" << std::endl;
-  player.clickNext();
+  player_->clickNext();
 
   std::cout << "\n===== Step 3: Click Lock =====" << std::endl;
-  player.clickLock();
+  player_->clickLock();
 
   std::cout << "\n===== Step 4: Click Play (Locked) =====" << std::endl;
-  player.clickPlay();
+  player_->clickPlay();
 
   std::cout << "\n===== Step 5: Unlock Player =====" << std::endl;
-  player.clickLock();
+  player_->clickLock();
 
   std::cout << "\n===== Step 6: Pause Playback =====" << std::endl;
-  player.clickPlay();
+  player_->clickPlay();
 
   return 0;
 }
