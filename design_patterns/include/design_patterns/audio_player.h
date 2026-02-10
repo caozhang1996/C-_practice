@@ -59,7 +59,7 @@ class State
   virtual void clickPrevious() = 0;
 
  protected:
-  std::weak_ptr<AudioPlayer> player_;
+  std::weak_ptr<AudioPlayer> player_;  // 弱引用，不拥有所有权
 };
 
 /**
