@@ -61,7 +61,19 @@ target_link_libraries(audio_player
   PUBLIC
 )
 
-install(TARGETS crtp observer visitor state audio_player
+# strategy
+add_executable(strategy src/strategy.cpp)
+
+target_include_directories(strategy PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(strategy
+  PUBLIC
+)
+
+install(TARGETS crtp observer visitor state audio_player strategy
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
