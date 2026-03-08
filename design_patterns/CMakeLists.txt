@@ -73,7 +73,19 @@ target_link_libraries(strategy
   PUBLIC
 )
 
-install(TARGETS crtp observer visitor state audio_player strategy
+# mediator
+add_executable(mediator src/mediator.cpp)
+
+target_include_directories(mediator PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(mediator
+  PUBLIC
+)
+
+install(TARGETS crtp observer visitor state audio_player strategy mediator
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
