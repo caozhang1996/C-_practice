@@ -34,13 +34,11 @@ namespace template_class_2
 
 }  // namespace template_class_2
 
-using namespace template_class_2;
-
 namespace template_class_2_test
 {
   void test()
   {
-    X<Y> x;
+    template_class_2::X<template_class_2::Y> x;
     x.m_intMember.m_value = 42;
     x.m_stringMember.m_value = "Hello, Templates!";
 

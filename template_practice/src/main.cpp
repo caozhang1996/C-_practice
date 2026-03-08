@@ -9,6 +9,9 @@
 #include "template_practice/template_class_6.h"
 #include "template_practice/template_class_7.h"
 #include "template_practice/template_class_8.h"
+#include "template_practice/template_dependent_names_1.h"
+#include "template_practice/template_dependent_names_2.h"
+#include "template_practice/template_dependent_names_3.h"
 #include "template_practice/template_function_1.h"
 #include "template_practice/template_function_2.h"
 #include "template_practice/template_function_3.h"
@@ -101,6 +104,21 @@ int main(int argc, char** argv)
 
   std::cout << "###############is_same_v_test###############" << std::endl;
   my_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_dependent_names_1_test###############"
+            << std::endl;
+  template_dependent_names_1_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_dependent_names_2_test###############"
+            << std::endl;
+  template_dependent_names_2_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_dependent_names_3_test###############"
+            << std::endl;
+  test_dependent_names_3();
   std::cout << std::endl;
 
   return 0;
