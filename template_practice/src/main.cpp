@@ -22,6 +22,7 @@
 #include "template_practice/template_static_member_1.h"
 #include "template_practice/template_variable_1.h"
 #include "template_practice/template_variable_2.h"
+#include "template_practice/template_void_t.h"
 
 using namespace std::string_literals;
 
@@ -137,6 +138,11 @@ int main(int argc, char** argv)
   std::cout << "###############template_enable_if_test###############"
             << std::endl;
   template_enable_if_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_void_t_test###############"
+            << std::endl;
+  template_void_t_test::test();
   std::cout << std::endl;
 
   return 0;
