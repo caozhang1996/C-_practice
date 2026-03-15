@@ -2,6 +2,7 @@
 
 #include "template_practice/is_same_v.h"
 #include "template_practice/template_SFINAE.h"
+#include "template_practice/template_SFINAE_example.h"
 #include "template_practice/template_class_1.h"
 #include "template_practice/template_class_2.h"
 #include "template_practice/template_class_3.h"
@@ -125,6 +126,11 @@ int main(int argc, char** argv)
   std::cout << "###############template_sfinae_test###############"
             << std::endl;
   template_sfinae_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_sfinae_example_test###############"
+            << std::endl;
+  template_sfinae_example_test::test();
   std::cout << std::endl;
 
   return 0;
