@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <type_traits>
 
 using namespace std::literals;
 
@@ -37,9 +38,20 @@ namespace template_class_1
     Ty m_data[N];
   };
 
-  // 用户定义推导指引, 用于从构造函数参数推导出模板参数
+  /**
+   * 第一种用户定义推导指引(不限制每个参数是同一种类型),用于从构造函数参数推导出模板参数
+   *  */
+  // template <typename Ty, typename... Args>
+  // array(Ty, Args...) -> array<Ty, 1 + sizeof...(Args)>;
+
+  /**
+   * 第一种用户定义推导指引(限制每个参数是同一种类型),用于从构造函数参数推导出模板参数
+   *  */
   template <typename Ty, typename... Args>
-  array(Ty, Args...) -> array<Ty, 1 + sizeof...(Args)>;
+  array(Ty, Args...)
+      -> array<std::enable_if_t<(std::is_same_v<Ty, Args> && ...), Ty>,
+               1 + sizeof...(Args)>;
+
 }  // namespace template_class_1
 
 using namespace template_class_1;
@@ -69,5 +81,9 @@ namespace template_class_1_test
     arr2.print();  // 输出: 1.1 2.2 3.3
     arr3.print();  // 输出: a b c
     arr4.print();  // 输出: hello world
+
+    // 使用第一种用户推导指引时编译 warning: "窄转换"
+    // array arr5{1.1, 1, 2};
+    // arr5.print();
   }
 }  // namespace template_class_1_test
