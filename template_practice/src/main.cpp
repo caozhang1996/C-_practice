@@ -14,6 +14,7 @@
 #include "template_practice/template_dependent_names_1.h"
 #include "template_practice/template_dependent_names_2.h"
 #include "template_practice/template_dependent_names_3.h"
+#include "template_practice/template_enable_if.h"
 #include "template_practice/template_function_1.h"
 #include "template_practice/template_function_2.h"
 #include "template_practice/template_function_3.h"
@@ -131,6 +132,11 @@ int main(int argc, char** argv)
   std::cout << "###############template_sfinae_example_test###############"
             << std::endl;
   template_sfinae_example_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_enable_if_test###############"
+            << std::endl;
+  template_enable_if_test::test();
   std::cout << std::endl;
 
   return 0;
