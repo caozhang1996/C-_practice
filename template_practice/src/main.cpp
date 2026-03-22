@@ -11,7 +11,8 @@
 #include "template_practice/template_class_6.h"
 #include "template_practice/template_class_7.h"
 #include "template_practice/template_class_8.h"
-#include "template_practice/template_concept.h"
+#include "template_practice/template_concept_1.h"
+#include "template_practice/template_concept_2.h"
 #include "template_practice/template_dependent_names_1.h"
 #include "template_practice/template_dependent_names_2.h"
 #include "template_practice/template_dependent_names_3.h"
@@ -146,10 +147,14 @@ int main(int argc, char** argv)
   template_void_t_test::test();
   std::cout << std::endl;
 
-  std::cout << "###############template_concept_test###############"
+  std::cout << "###############template_concept_1_test###############"
             << std::endl;
-  template_concept_test::test();
+  template_concept_1_test::test();
   std::cout << std::endl;
 
+  std::cout << "###############template_concept_2_test###############"
+            << std::endl;
+  template_concept_2_test::test();
+  std::cout << std::endl;
   return 0;
 }

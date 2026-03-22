@@ -1,17 +1,19 @@
 /**
- * @file template_concept.h
+ * @file template_concept_1.h
  * @brief C++ 20 新特性：约束与概念
  * @author cao zhang
  * @date 2026-03-22
  * @version 1.0
  */
 
-namespace template_concept
+#include <type_traits>
+
+namespace template_concept_1
 {
   // 我需要写一个函数模板 add。 想要要求传入的对象必须是支持 operator+
   // 的，应该怎么写？（使用 C++ 的约束与概念）
 
-  /**
+  /**Intergral
    * concept 语法
    * tempalte <模板行参列表>
    * concept 概念名 属性（可选） = 约束表达式;
@@ -56,9 +58,9 @@ namespace template_concept
 
   void fun(const SignedIntergral auto& x) {}
 
-}  // namespace template_concept
+}  // namespace template_concept_1
 
-namespace template_concept_test
+namespace template_concept_1_test
 {
   void test()
   {
@@ -71,10 +73,10 @@ namespace template_concept_test
       X operator+(const X& other) const { return this->value_ + other.value_; }
     };
 
-    template_concept::add(X{1}, X{2});
-    template_concept::add(1, 2);
+    template_concept_1::add(X{1}, X{2});
+    template_concept_1::add(1, 2);
 
-    template_concept::fun(1);
-    // template_concept::fun(1u); // 编译报错
+    template_concept_1::fun(1);
+    // template_concept_1::fun(1u); // 编译报错
   }
-}  // namespace template_concept_test
+}  // namespace template_concept_1_test
