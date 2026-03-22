@@ -21,6 +21,20 @@ namespace template_concept
    * 下列概念的语义是：约束模板类型行参 T，即要求 T 必须满足约束表达式的要求序列
    * a + a, 如果 add 模板函数中的 T 类型不满足，则不会选择这个模板函数 T
    */
+
+  /**
+   * 定义概念（concept）时声明的约束表达式，只需要是编译期可得到 bool
+   * 类型的表达式即可。
+   * 例如：
+   *  template<typename T>
+   *  concept intergral = std::is_intergral_v<T>;
+   *
+   *  template<typename T>
+   *  concept Int = std::is_same_v<T, int>;
+   *
+   * 下述的 requires 表达式，也是会返回 bool 值的，简单来说，把模板参数带入到
+   * requires 表达式中，是否符合语法，符合就返回 true，不符合就返回 false
+   */
   template <typename T>
   concept Add = requires(T a)
   {
