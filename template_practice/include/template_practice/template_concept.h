@@ -47,6 +47,15 @@ namespace template_concept
     return t1 + t2;
   }
 
+  // 合取：需要满足多个条件的约束
+  template <typename T>
+  concept Intergral = std::is_integral_v<T>;
+
+  template <typename T>
+  concept SignedIntergral = Intergral<T> && std::is_signed_v<T>;
+
+  void fun(const SignedIntergral auto& x) {}
+
 }  // namespace template_concept
 
 namespace template_concept_test
@@ -64,5 +73,8 @@ namespace template_concept_test
 
     template_concept::add(X{1}, X{2});
     template_concept::add(1, 2);
+
+    template_concept::fun(1);
+    // template_concept::fun(1u); // 编译报错
   }
 }  // namespace template_concept_test
