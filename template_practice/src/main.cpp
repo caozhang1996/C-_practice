@@ -24,6 +24,7 @@
 #include "template_practice/template_requires_1.h"
 #include "template_practice/template_requires_2.h"
 #include "template_practice/template_static_member_1.h"
+#include "template_practice/template_tuple.h"
 #include "template_practice/template_variable_1.h"
 #include "template_practice/template_variable_2.h"
 #include "template_practice/template_void_t.h"
@@ -167,6 +168,10 @@ int main(int argc, char** argv)
   std::cout << "###############template_requires_2_test###############"
             << std::endl;
   template_requires_2_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_tuple_test###############" << std::endl;
+  template_tuple_test::test();
   std::cout << std::endl;
 
   return 0;
