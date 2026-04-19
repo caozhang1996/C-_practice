@@ -21,6 +21,7 @@
 #include "template_practice/template_function_2.h"
 #include "template_practice/template_function_3.h"
 #include "template_practice/template_function_4.h"
+#include "template_practice/template_if.h"
 #include "template_practice/template_requires_1.h"
 #include "template_practice/template_requires_2.h"
 #include "template_practice/template_static_member_1.h"
@@ -172,6 +173,10 @@ int main(int argc, char** argv)
 
   std::cout << "###############template_tuple_test###############" << std::endl;
   template_tuple_test::test();
+  std::cout << std::endl;
+
+  std::cout << "###############template_if_test###############" << std::endl;
+  template_if_test::test();
   std::cout << std::endl;
 
   return 0;
