@@ -17,6 +17,10 @@ class ShapeBase
   double getArea() const
   {
     // 调用派生类的面积计算逻辑
+    /*
+     * static_cast<const Shape*>(this) 进行了一个类型转换，将 this
+     * 指针（也就是父类的指针），转换为通过模板参数传递的类型，也就是子类的指针。
+     */
     return static_cast<const Shape*>(this)->calculateArea();
   }
 };
@@ -26,6 +30,10 @@ class Circle : public ShapeBase<Circle>
 {
  public:
   Circle(double r) : radius(r) {}
+
+  friend ShapeBase<Circle>;
+
+ private:
   // 实现基类依赖的接口
   double calculateArea() const { return 3.14159 * radius * radius; }
 
@@ -38,6 +46,10 @@ class Rectangle : public ShapeBase<Rectangle>
 {
  public:
   Rectangle(double w, double h) : width(w), height(h) {}
+
+  friend ShapeBase<Rectangle>;
+
+ private:
   double calculateArea() const { return width * height; }
 
  private:
