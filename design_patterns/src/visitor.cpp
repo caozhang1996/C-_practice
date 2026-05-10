@@ -4,15 +4,17 @@
 
 class Shape;
 
-// 访问者接口
+// 抽象访问者接口
 class Visitor
 {
  public:
+  virtual ~Visitor() {} 
+
   virtual void visit(class Circle& circle) = 0;
   virtual void visit(class Rectangle& rectangle) = 0;
 };
 
-// 元素接口
+// 抽象元素接口
 class Shape
 {
  public:
