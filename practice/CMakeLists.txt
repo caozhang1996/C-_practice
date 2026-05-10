@@ -201,6 +201,18 @@ target_link_libraries(deep_copy
   PUBLIC 
 )
 
+# virtual_table_ptr
+add_executable(virtual_table_ptr src/virtual_table_ptr.cpp)
+
+target_include_directories(virtual_table_ptr PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(virtual_table_ptr
+  PUBLIC 
+)
+
 install(TARGETS sequence_node 
                 odd_sequence_node 
                 align_node 
@@ -215,6 +227,7 @@ install(TARGETS sequence_node
                 string_view_node 
                 if_switch_node
                 deep_copy
+                virtual_table_ptr
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
