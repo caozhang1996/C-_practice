@@ -213,6 +213,18 @@ target_link_libraries(virtual_table_ptr
   PUBLIC 
 )
 
+# stack_overflow
+add_executable(stack_overflow src/stack_overflow.cpp)
+
+target_include_directories(stack_overflow PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(stack_overflow
+  PUBLIC 
+)
+
 install(TARGETS sequence_node 
                 odd_sequence_node 
                 align_node 
@@ -227,7 +239,7 @@ install(TARGETS sequence_node
                 string_view_node 
                 if_switch_node
                 deep_copy
-                virtual_table_ptr
+                stack_overflow
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
