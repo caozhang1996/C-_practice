@@ -189,6 +189,18 @@ target_link_libraries(if_switch_node
   PUBLIC 
 )
 
+# deep_copy
+add_executable(deep_copy src/deep_copy.cpp)
+
+target_include_directories(deep_copy PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(deep_copy
+  PUBLIC 
+)
+
 install(TARGETS sequence_node 
                 odd_sequence_node 
                 align_node 
@@ -202,6 +214,7 @@ install(TARGETS sequence_node
                 operator_node 
                 string_view_node 
                 if_switch_node
+                deep_copy
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
