@@ -68,8 +68,11 @@ int main(int argc, char** argv)
   Circle c(5);
   Rectangle r(3, 4);
 
-  std::cout << "Area: " << c.getArea() << std::endl;
-  std::cout << "Area: " << r.getArea() << std::endl;
+  // std::cout << "Area: " << c.getArea() << std::endl;
+  // std::cout << "Area: " << r.getArea() << std::endl;
+
+  printArea<Circle>(c);
+  printArea<Rectangle>(r);
 
   return 0;
 }
