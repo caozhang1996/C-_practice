@@ -225,6 +225,18 @@ target_link_libraries(stack_overflow
   PUBLIC 
 )
 
+# my_make_unique
+add_executable(my_make_unique src/my_make_unique.cpp)
+
+target_include_directories(my_make_unique PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(my_make_unique
+  PUBLIC 
+)
+
 install(TARGETS sequence_node 
                 odd_sequence_node 
                 align_node 
@@ -240,6 +252,7 @@ install(TARGETS sequence_node
                 if_switch_node
                 deep_copy
                 stack_overflow
+                my_make_unique
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
