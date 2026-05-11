@@ -19,21 +19,21 @@ class Strategy
 };
 
 // 具体策略类：实现加法算法
-class ConcreteStrategyAdd : public Strategy
+class StrategyAdd : public Strategy
 {
  public:
   int execute(int a, int b) const override { return a + b; }
 };
 
 // 具体策略类：实现减法算法
-class ConcreteStrategySubtract : public Strategy
+class StrategySubtract : public Strategy
 {
  public:
   int execute(int a, int b) const override { return a - b; }
 };
 
 // 具体策略类：实现乘法算法
-class ConcreteStrategyMultiply : public Strategy
+class StrategyMultiply : public Strategy
 {
  public:
   int execute(int a, int b) const override { return a * b; }
@@ -44,28 +44,28 @@ class Context
 {
  public:
   explicit Context(std::unique_ptr<Strategy> strat = nullptr)
-      : strategy(std::move(strat))
+      : strategy_(std::move(strat))
   {
   }
 
   // 运行时切换策略的 setter 方法
   void setStrategy(std::unique_ptr<Strategy> strat)
   {
-    strategy = std::move(strat);
+    strategy_ = std::move(strat);
   }
 
   int executeStrategy(int a, int b) const
   {
-    if (!strategy)
+    if (!strategy_)
     {
       std::cerr << "Error: No strategy set!" << std::endl;
       return 0;  // 错误返回值
     }
-    return strategy->execute(a, b);
+    return strategy_->execute(a, b);
   }
 
  private:
-  std::unique_ptr<Strategy> strategy;
+  std::unique_ptr<Strategy> strategy_;
 };
 
 // 客户端代码：交互逻辑 + 策略选择
@@ -89,15 +89,15 @@ int main()
   // 根据用户输入选择并设置策略
   if (action == "addition")
   {
-    context.setStrategy(std::make_unique<ConcreteStrategyAdd>());
+    context.setStrategy(std::make_unique<StrategyAdd>());
   }
   else if (action == "subtraction")
   {
-    context.setStrategy(std::make_unique<ConcreteStrategySubtract>());
+    context.setStrategy(std::make_unique<StrategySubtract>());
   }
   else if (action == "multiplication")
   {
-    context.setStrategy(std::make_unique<ConcreteStrategyMultiply>());
+    context.setStrategy(std::make_unique<StrategyMultiply>());
   }
   else
   {
