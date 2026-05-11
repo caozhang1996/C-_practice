@@ -237,6 +237,18 @@ target_link_libraries(my_make_unique
   PUBLIC 
 )
 
+# custom_deleter
+add_executable(custom_deleter src/custom_deleter.cpp)
+
+target_include_directories(custom_deleter PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(custom_deleter
+  PUBLIC 
+)
+
 install(TARGETS sequence_node 
                 odd_sequence_node 
                 align_node 
@@ -253,6 +265,7 @@ install(TARGETS sequence_node
                 deep_copy
                 stack_overflow
                 my_make_unique
+                custom_deleter
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
