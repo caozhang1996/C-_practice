@@ -261,6 +261,18 @@ target_link_libraries(my_shared_ptr
   PUBLIC 
 )
 
+# my_unique_ptr
+add_executable(my_unique_ptr src/my_unique_ptr.cpp)
+
+target_include_directories(my_unique_ptr PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(my_unique_ptr
+  PUBLIC 
+)
+
 install(TARGETS sequence_node 
                 odd_sequence_node 
                 align_node 
@@ -279,6 +291,7 @@ install(TARGETS sequence_node
                 my_make_unique
                 custom_deleter
                 my_shared_ptr
+                my_unique_ptr
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
