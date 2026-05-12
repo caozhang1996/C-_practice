@@ -2,6 +2,8 @@
  * @file factory_method.cpp
  * @author cao zhang
  * @brief 工厂方法模式
+ * 
+ * 工厂方法模式引入了抽象工厂和具体工厂的概念，每个具体工厂只负责创建一个具体产品，添加新的产品只需要添加新的工厂类
  * @version 0.1
  * @date 2025-05-12
  */
