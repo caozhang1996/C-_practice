@@ -159,8 +159,9 @@ int main(int argc, char** argv)
     {
         std::cout << "p3 release 后为空" << std::endl;
     }
-    // 手动释放
-    delete raw;
+
+    raw->hello();
+    delete raw;  // 手动释放
 
     // 6. reset 重置
     unique_ptr<int> pi(new int(666));
