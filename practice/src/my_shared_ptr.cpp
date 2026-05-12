@@ -1,7 +1,7 @@
 /**
  * @file my_shared_ptr.cpp
  * @author cao zhang
- * @brief 虚函数表指针测试
+ * @brief 手写简易的 shared_ptr
  * 
  * @version 0.1
  * @date 2026-05-11
