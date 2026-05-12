@@ -273,6 +273,18 @@ target_link_libraries(my_unique_ptr
   PUBLIC 
 )
 
+# enable_shared_from_this
+add_executable(enable_shared_from_this src/enable_shared_from_this.cpp)
+
+target_include_directories(enable_shared_from_this PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(enable_shared_from_this
+  PUBLIC 
+)
+
 install(TARGETS sequence_node 
                 odd_sequence_node 
                 align_node 
@@ -292,6 +304,7 @@ install(TARGETS sequence_node
                 custom_deleter
                 my_shared_ptr
                 my_unique_ptr
+                enable_shared_from_this
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
