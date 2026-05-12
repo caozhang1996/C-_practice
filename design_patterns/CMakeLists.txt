@@ -97,8 +97,19 @@ target_link_libraries(factory_method
   PUBLIC
 )
 
+# abstract_factory
+add_executable(abstract_factory src/abstract_factory.cpp)
 
-install(TARGETS crtp observer visitor state audio_player strategy mediator factory_method
+target_include_directories(abstract_factory PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(abstract_factory
+  PUBLIC
+)
+
+install(TARGETS crtp observer visitor state audio_player strategy mediator factory_method abstract_factory
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
