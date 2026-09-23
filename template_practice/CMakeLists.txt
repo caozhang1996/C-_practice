@@ -19,3 +19,7 @@ install(TARGETS template
 )
 
 install(DIRECTORY include/ DESTINATION include)
+
+# 聚合 target：供 build.sh 按子项目选择编译
+add_custom_target(project_template_practice)
+add_dependencies(project_template_practice template)

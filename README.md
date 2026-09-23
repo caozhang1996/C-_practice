@@ -25,10 +25,27 @@ bash build.sh
 
 `build.sh` 会：
 
-1. 删除旧的 `build/` 目录
-2. 用 CMake 生成 Debug 构建
-3. 编译所有可执行文件
-4. `make install` 安装到 `install/` 目录
+1. 用 CMake 生成 Debug 构建（复用 `build/` 目录，增量编译）
+2. 编译指定的一个或多个子项目
+3. 安装到 `install/` 目录
+
+**按子项目编译**（只编译改动的项目）：
+
+```bash
+# 编译全部（和原来一样）
+bash build.sh
+
+# 只编译某个子项目
+bash build.sh practice
+bash build.sh design_patterns
+bash build.sh template_practice
+bash build.sh state_machine
+
+# 只编译某个子项目下的单个可执行文件
+bash build.sh practice sequence_node
+bash build.sh practice thread_pool
+bash build.sh design_patterns observer
+```
 
 构建产物安装在 `install/` 中，结构如下：
 

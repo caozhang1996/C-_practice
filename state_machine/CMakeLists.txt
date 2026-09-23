@@ -24,3 +24,7 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 install(DIRECTORY include/ DESTINATION include)
+
+# 聚合 target：供 build.sh 按子项目选择编译
+add_custom_target(project_state_machine)
+add_dependencies(project_state_machine ${PROJECT_NAME})

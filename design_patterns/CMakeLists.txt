@@ -114,3 +114,34 @@ install(TARGETS crtp observer visitor state audio_player strategy mediator facto
 )
 
 install(DIRECTORY include/ DESTINATION include)
+
+# 聚合 target: 供 build.sh 按子项目选择编译
+# add_custom_target() — 创建一个不产生任何编译产物的"虚拟 target"`
+# add_dependencies() — 声明 project_design_patterns 依赖于前面定义的 9 个可执行文件 target
+# 这样形成了一个依赖链:
+# project_design_patterns
+#   ├── crtp
+#   ├── observer
+#   ├── visitor
+#   ├── state
+#   ├── audio_player
+#   ├── strategy
+#   ├── mediator
+#   ├── factory_method
+#   └── abstract_factory
+
+# 三者合起来的效果
+
+# cmake --build . --target project_design_patterns
+# 执行这条命令时，CMake 会：
+# 1. 发现要构建 project_design_patterns——但它是个 custom target，没有文件要生成
+# 2. 查找它的依赖——发现它依赖于 crtp、observer 等 9 个 target
+# 3. 递归构建所有依赖——依次检查每个依赖是否需要重新编译（源码变了就编译，没变就跳过）
+# 4. 所有依赖构建完，project_design_patterns 本身无事可做，直接完成
+
+set(DESIGN_PATTERNS_EXECUTABLES
+    crtp observer visitor state audio_player strategy mediator
+    factory_method abstract_factory
+)
+add_custom_target(project_design_patterns)
+add_dependencies(project_design_patterns ${DESIGN_PATTERNS_EXECUTABLES})

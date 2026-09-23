@@ -310,3 +310,13 @@ install(TARGETS sequence_node
 
 install(DIRECTORY include/ DESTINATION include)
 
+# 聚合 target: 供 build.sh 按子项目选择编译
+set(PRACTICE_EXECUTABLES
+    sequence_node odd_sequence_node align_node sigsegv thread_pool
+    learning_thread jthread_node mixin_node future_node shared_future_node
+    operator_node string_view_node if_switch_node deep_copy virtual_table_ptr
+    stack_overflow my_make_unique custom_deleter my_shared_ptr my_unique_ptr
+    enable_shared_from_this
+)
+add_custom_target(project_practice)
+add_dependencies(project_practice ${PRACTICE_EXECUTABLES})
