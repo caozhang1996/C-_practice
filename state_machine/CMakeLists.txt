@@ -19,11 +19,14 @@ target_link_libraries(${PROJECT_NAME}
   PUBLIC 
 )
 
-install(TARGETS ${PROJECT_NAME} 
+install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION lib/${PROJECT_NAME}
+  COMPONENT state_machine_rt
 )
 
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION include
+  COMPONENT state_machine_dev
+)
 
 # 聚合 target：供 build.sh 按子项目选择编译
 add_custom_target(project_state_machine)

@@ -109,11 +109,35 @@ target_link_libraries(abstract_factory
   PUBLIC
 )
 
-install(TARGETS crtp observer visitor state audio_player strategy mediator factory_method abstract_factory
+# CMake 允许为 install() 命令加一个 COMPONENT 标签，然后 cmake --install . --component <名字> 只安装这个标签的内容。
+
+# 打个比方：
+
+
+# install(TARGETS sequence_node ...  COMPONENT practice_rt)    ← 贴标签
+# install(DIRECTORY include/ ...    COMPONENT practice_dev)    ← 贴标签
+#                                                     ↑
+# cmake --install . --component practice_rt          ← 只取 practice 的执行文件
+# cmake --install . --component practice_dev          ← 只取 practice 的头文件
+# 不加 --component 时，cmake --install . 安装所有组件（和原来一样）。
+
+install(TARGETS
+  crtp
+  observer
+  visitor
+  state
+  audio_player
+  strategy
+  mediator
+  factory_method
+  abstract_factory
   RUNTIME DESTINATION lib/${PROJECT_NAME}
+  COMPONENT design_patterns_rt
 )
 
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION include
+  COMPONENT design_patterns_dev
+)
 
 # 聚合 target: 供 build.sh 按子项目选择编译
 # add_custom_target() — 创建一个不产生任何编译产物的"虚拟 target"`

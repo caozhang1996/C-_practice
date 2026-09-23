@@ -16,9 +16,12 @@ target_link_libraries(template
 
 install(TARGETS template
   RUNTIME DESTINATION lib/${PROJECT_NAME}
+  COMPONENT template_practice_rt
 )
 
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION include
+  COMPONENT template_practice_dev
+)
 
 # 聚合 target：供 build.sh 按子项目选择编译
 add_custom_target(project_template_practice)

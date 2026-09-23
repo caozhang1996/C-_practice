@@ -37,16 +37,24 @@ build_project() {
 case "$PROJECT" in
   all)
     cmake --build .
-    msgs=("所有子项目编译完成")
+    # 不加 --component = 安装全部
+    cmake --install .
     ;;
   practice|design_patterns|template_practice|state_machine)
     if [ -n "$TARGET" ]; then
       echo "→ 编译 ${PROJECT} 下的单个目标: ${TARGET}"
       cmake --build . --target "${TARGET}"
       echo "→ ${TARGET} 编译完成"
+
+      # 单目标：只装 runtime，不装头文件（调试时不需要）
+      cmake --install . --component "${PROJECT}_rt" 2>/dev/null || true
     else
       build_project "${PROJECT}"
       echo "→ ${PROJECT} 编译完成"
+      
+      # 整个子项目：装 runtime + 头文件
+      cmake --install . --component "${PROJECT}_rt" 2>/dev/null || true
+      cmake --install . --component "${PROJECT}_dev" 2>/dev/null || true
     fi
     ;;
   *)
@@ -58,9 +66,6 @@ case "$PROJECT" in
     exit 1
     ;;
 esac
-
-# 安装（只安装已构建的目标，未构建的自动跳过）
-cmake --install . 2>/dev/null || true
 
 echo ""
 echo "✓ 完成"

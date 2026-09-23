@@ -306,9 +306,12 @@ install(TARGETS sequence_node
                 my_unique_ptr
                 enable_shared_from_this
   RUNTIME DESTINATION lib/${PROJECT_NAME}
+  COMPONENT practice_rt
 )
 
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION include
+  COMPONENT practice_dev
+)
 
 # 聚合 target: 供 build.sh 按子项目选择编译
 set(PRACTICE_EXECUTABLES
