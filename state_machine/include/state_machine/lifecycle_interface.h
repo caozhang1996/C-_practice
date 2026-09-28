@@ -20,7 +20,10 @@
 
 #include "lifecycle_msgs/msg/transition.hpp"
 
-enum class LifecycleState;
+namespace detail
+{
+  struct LifecycleState;
+}
 
 namespace ifs
 {
@@ -41,67 +44,55 @@ namespace ifs
      * @brief 用于 configure transition 的回调函数
      *
      * @param previous_state
-     * @param extra_msg
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onConfigure(const LifecycleState& previous_state,
-                                       const std::string& extra_msg);
+    virtual CallbackReturn onConfigure(const detail::LifecycleState& previous_state);
 
     /**
      * @brief 用于 cleanup transition 的回调函数
      *
      * @param previous_state
-     * @param extra_msg
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onCleanup(const LifecycleState& previous_state,
-                                     const std::string& extra_msg);
+    virtual CallbackReturn onCleanup(const detail::LifecycleState& previous_state);
 
     /**
      * @brief 用于 shutdown transition 的回调函数
      *
      * @param previous_state
-     * @param extra_msg
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onShutdown(const LifecycleState& previous_state,
-                                      const std::string& extra_msg);
+    virtual CallbackReturn onShutdown(const detail::LifecycleState& previous_state);
 
     /**
      * @brief 用于 activate transition 的回调函数
      *
      * @param previous_state
-     * @param extra_msg
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onActivate(const LifecycleState& previous_state,
-                                      const std::string& extra_msg);
+    virtual CallbackReturn onActivate(const detail::LifecycleState& previous_state);
 
     /**
      * @brief 用于 deactivate transition 的回调函数
      *
      * @param previous_state
-     * @param extra_msg
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onDeactivate(const LifecycleState& previous_state,
-                                        const std::string& extra_msg);
+    virtual CallbackReturn onDeactivate(const detail::LifecycleState& previous_state);
 
     /**
-     * @brief 用于 deactivate transition 的回调函数
+     * @brief 用于 error transition 的回调函数
      *
      * @param previous_state
-     * @param extra_msg
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onError(const LifecycleState& previous_state,
-                                   const std::string& extra_msg);
+    virtual CallbackReturn onError(const detail::LifecycleState& previous_state);
 
     virtual ~LifecycleNodeInterface() {}
   };
