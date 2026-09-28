@@ -3,10 +3,22 @@ project(state_machine)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# ROS2 lifecycle_msgs 依赖
+# 自动检测 ROS2 安装路径（无需手动 source setup.bash）
+foreach(_ros_dir /opt/ros/humble /opt/ros/iron /opt/ros/rolling /opt/ros/jazzy)
+  if(EXISTS ${_ros_dir}/share/lifecycle_msgs)
+    list(APPEND CMAKE_PREFIX_PATH ${_ros_dir})
+    message(STATUS "Found ROS2 at ${_ros_dir}")
+    break()
+  endif()
+endforeach()
+find_package(lifecycle_msgs REQUIRED)
+
 # state_machine
 add_executable(${PROJECT_NAME}
   src/data_types.cpp
   src/lifecycle_state_machine.cpp
+  src/lifecycle_interface.cpp
   src/main.cpp
 )
 
@@ -16,7 +28,8 @@ target_include_directories(${PROJECT_NAME}  PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-  PUBLIC 
+  PUBLIC
+  lifecycle_msgs::lifecycle_msgs
 )
 
 install(TARGETS ${PROJECT_NAME}

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "lifecycle_msgs/msg/Transition.h"
+#include "lifecycle_msgs/msg/transition.hpp"
 
 enum class LifecycleState;
 

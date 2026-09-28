@@ -1,4 +1,4 @@
-#include "state_machine/lifecycle_node_interface.h"
+#include "state_machine/lifecycle_interface.h"
 
 namespace ifs
 {
