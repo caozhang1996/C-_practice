@@ -21,7 +21,8 @@
 #include <vector>
 
 #include "data_types.h"
-#include "lifecycle_enums.h"
+#include "lifecycle_msgs/msg/state.hpp"
+#include "lifecycle_msgs/msg/transition.hpp"
 
 inline const std::string kTransitionSuccess = "transition_success";
 inline const std::string kTransitionFailure = "transition_failure";

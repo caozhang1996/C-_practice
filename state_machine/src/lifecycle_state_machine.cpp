@@ -38,43 +38,49 @@ void LifecycleStateMachine::initDefaultStateMachine()
 void LifecycleStateMachine::registerAllPrimaryStates()
 {
   // id: 0 ~ 4
+  transition_map.states.emplace_back(LifecycleState{
+      kUnkonwnLabel, lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN});
+
   transition_map.states.emplace_back(
-      LifecycleState{kUnkonwnLabel, lifecycle::state::PRIMARY_STATE_UNKNOWN});
+      LifecycleState{kUnConfiguredLabel,
+                     lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED});
 
   transition_map.states.emplace_back(LifecycleState{
-      kUnConfiguredLabel, lifecycle::state::PRIMARY_STATE_UNCONFIGURED});
-
-  transition_map.states.emplace_back(
-      LifecycleState{kInactiveLabel, lifecycle::state::PRIMARY_STATE_INACTIVE});
-
-  transition_map.states.emplace_back(
-      LifecycleState{kActiveLabel, lifecycle::state::PRIMARY_STATE_ACTIVE});
+      kInactiveLabel, lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE});
 
   transition_map.states.emplace_back(LifecycleState{
-      kFinalizedLabel, lifecycle::state::PRIMARY_STATE_FINALIZED});
+      kActiveLabel, lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE});
+
+  transition_map.states.emplace_back(LifecycleState{
+      kFinalizedLabel, lifecycle_msgs::msg::State::PRIMARY_STATE_FINALIZED});
 }
 
 void LifecycleStateMachine::registerAllTransitions()
 {
   // id: 10 ~ 15
-  transition_map.states.emplace_back(LifecycleState{
-      kConfiguringLabel, lifecycle::state::TRANSITION_STATE_CONFIGURING});
-
-  transition_map.states.emplace_back(LifecycleState{
-      kCleaningUpLabel, lifecycle::state::TRANSITION_STATE_CLEANINGUP});
-
-  transition_map.states.emplace_back(LifecycleState{
-      kShuttingDownLabel, lifecycle::state::TRANSITION_STATE_SHUTTINGDOWN});
-
-  transition_map.states.emplace_back(LifecycleState{
-      kActivatingLabel, lifecycle::state::TRANSITION_STATE_ACTIVATING});
-
-  transition_map.states.emplace_back(LifecycleState{
-      kDeactivatingLabel, lifecycle::state::TRANSITION_STATE_DEACTIVATING});
+  transition_map.states.emplace_back(
+      LifecycleState{kConfiguringLabel,
+                     lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING});
 
   transition_map.states.emplace_back(
-      LifecycleState{kErrorProcessingLabel,
-                     lifecycle::state::TRANSITION_STATE_ERRORPROCESSING});
+      LifecycleState{kCleaningUpLabel,
+                     lifecycle_msgs::msg::State::TRANSITION_STATE_CLEANINGUP});
+
+  transition_map.states.emplace_back(LifecycleState{
+      kShuttingDownLabel,
+      lifecycle_msgs::msg::State::TRANSITION_STATE_SHUTTINGDOWN});
+
+  transition_map.states.emplace_back(
+      LifecycleState{kActivatingLabel,
+                     lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING});
+
+  transition_map.states.emplace_back(LifecycleState{
+      kDeactivatingLabel,
+      lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING});
+
+  transition_map.states.emplace_back(LifecycleState{
+      kErrorProcessingLabel,
+      lifecycle_msgs::msg::State::TRANSITION_STATE_ERRORPROCESSING});
 }
 
 void LifecycleStateMachine::registerTransitions()
@@ -94,35 +100,35 @@ void LifecycleStateMachine::registerTransitions()
                              std::to_string(state_id));
   };
 
-  auto& unconfigured_state =
-      lifecycle_get_state(lifecycle::state::PRIMARY_STATE_UNCONFIGURED);
+  auto& unconfigured_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED);
 
   auto& inactive_state =
-      lifecycle_get_state(lifecycle::state::PRIMARY_STATE_INACTIVE);
+      lifecycle_get_state(lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE);
 
   auto& active_state =
-      lifecycle_get_state(lifecycle::state::PRIMARY_STATE_ACTIVE);
+      lifecycle_get_state(lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE);
 
   auto& finalized_state =
-      lifecycle_get_state(lifecycle::state::PRIMARY_STATE_FINALIZED);
+      lifecycle_get_state(lifecycle_msgs::msg::State::PRIMARY_STATE_FINALIZED);
 
-  auto& configuring_state =
-      lifecycle_get_state(lifecycle::state::TRANSITION_STATE_CONFIGURING);
+  auto& configuring_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING);
 
-  auto& activating_state =
-      lifecycle_get_state(lifecycle::state::TRANSITION_STATE_ACTIVATING);
+  auto& activating_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING);
 
-  auto& deactivating_state =
-      lifecycle_get_state(lifecycle::state::TRANSITION_STATE_DEACTIVATING);
+  auto& deactivating_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING);
 
-  auto& cleaningup_state =
-      lifecycle_get_state(lifecycle::state::TRANSITION_STATE_CLEANINGUP);
+  auto& cleaningup_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::TRANSITION_STATE_CLEANINGUP);
 
-  auto& shuttingdown_state =
-      lifecycle_get_state(lifecycle::state::TRANSITION_STATE_SHUTTINGDOWN);
+  auto& shuttingdown_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::TRANSITION_STATE_SHUTTINGDOWN);
 
-  auto& errorprocessing_state =
-      lifecycle_get_state(lifecycle::state::TRANSITION_STATE_ERRORPROCESSING);
+  auto& errorprocessing_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::TRANSITION_STATE_ERRORPROCESSING);
 
   auto lifecycle_register_transition = [&](LifecycleTransition& transition) {
     auto& transitions = transition_map.transitions;
@@ -134,158 +140,175 @@ void LifecycleStateMachine::registerTransitions()
 
   // register transition from unconfigured to configuring
   LifecycleTransition transition_configure(
-      kConfigureLabel, lifecycle::transition::TRANSITION_CONFIGURE,
+      kConfigureLabel, lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE,
       unconfigured_state, configuring_state);
   lifecycle_register_transition(transition_configure);
 
   // register transition from configuring to inactive
   LifecycleTransition transition_on_configure_success(
       kTransitionSuccess,
-      lifecycle::transition::TRANSITION_ON_CONFIGURE_SUCCESS, configuring_state,
-      inactive_state);
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_CONFIGURE_SUCCESS,
+      configuring_state, inactive_state);
   lifecycle_register_transition(transition_on_configure_success);
 
   // register transition from configuring to unconfigured
   LifecycleTransition transition_on_configure_failure(
       kTransitionFailure,
-      lifecycle::transition::TRANSITION_ON_CONFIGURE_FAILURE, configuring_state,
-      unconfigured_state);
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_CONFIGURE_FAILURE,
+      configuring_state, unconfigured_state);
   lifecycle_register_transition(transition_on_configure_failure);
 
   // register transition from configuring to errorprocessing
   LifecycleTransition transition_on_configure_error(
-      kTransitionError, lifecycle::transition::TRANSITION_ON_CONFIGURE_ERROR,
+      kTransitionError,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_CONFIGURE_ERROR,
       configuring_state, errorprocessing_state);
   lifecycle_register_transition(transition_on_configure_error);
 
   // register transition from inactive to cleaningup
   LifecycleTransition transition_cleanup(
-      kCleanUpLabel, lifecycle::transition::TRANSITION_CLEANUP, inactive_state,
-      cleaningup_state);
+      kCleanUpLabel, lifecycle_msgs::msg::Transition::TRANSITION_CLEANUP,
+      inactive_state, cleaningup_state);
   lifecycle_register_transition(transition_cleanup);
 
   // register transition from cleaningup to unconfigured
   LifecycleTransition transition_on_cleanup_success(
-      kTransitionSuccess, lifecycle::transition::TRANSITION_ON_CLEANUP_SUCCESS,
+      kTransitionSuccess,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_CLEANUP_SUCCESS,
       cleaningup_state, unconfigured_state);
   lifecycle_register_transition(transition_on_cleanup_success);
 
   // register transition from cleaningup to inactive
   LifecycleTransition transition_on_cleanup_failure(
-      kTransitionFailure, lifecycle::transition::TRANSITION_ON_CLEANUP_FAILURE,
+      kTransitionFailure,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_CLEANUP_FAILURE,
       cleaningup_state, inactive_state);
   lifecycle_register_transition(transition_on_cleanup_failure);
 
   // register transition from cleaniningup to errorprocessing
   LifecycleTransition transition_on_cleanup_error(
-      kTransitionError, lifecycle::transition::TRANSITION_ON_CLEANUP_ERROR,
+      kTransitionError,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_CLEANUP_ERROR,
       cleaningup_state, errorprocessing_state);
   lifecycle_register_transition(transition_on_cleanup_error);
 
   // register transition from inactive to activating
   LifecycleTransition transition_activate(
-      kActivateLabel, lifecycle::transition::TRANSITION_ACTIVATE,
+      kActivateLabel, lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE,
       inactive_state, activating_state);
   lifecycle_register_transition(transition_activate);
 
   // register transition from activating to active
   LifecycleTransition transition_on_activate_success(
-      kTransitionSuccess, lifecycle::transition::TRANSITION_ON_ACTIVATE_SUCCESS,
+      kTransitionSuccess,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_ACTIVATE_SUCCESS,
       activating_state, active_state);
   lifecycle_register_transition(transition_on_activate_success);
 
   // register transition from activating to inactive
   LifecycleTransition transition_on_activate_failure(
-      kTransitionFailure, lifecycle::transition::TRANSITION_ON_ACTIVATE_FAILURE,
+      kTransitionFailure,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_ACTIVATE_FAILURE,
       activating_state, inactive_state);
   lifecycle_register_transition(transition_on_activate_failure);
 
   // register transition from activating to errorprocessing
   LifecycleTransition transition_on_activate_error(
-      kTransitionError, lifecycle::transition::TRANSITION_ON_ACTIVATE_ERROR,
+      kTransitionError,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_ACTIVATE_ERROR,
       activating_state, errorprocessing_state);
   lifecycle_register_transition(transition_on_activate_error);
 
   // register transition from active to deactivating
   LifecycleTransition transition_deactivate(
-      kDeactivateLabel, lifecycle::transition::TRANSITION_DEACTIVATE,
+      kDeactivateLabel, lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE,
       active_state, deactivating_state);
   lifecycle_register_transition(transition_deactivate);
 
   // register transition from deactivating to inactive
   LifecycleTransition transition_on_deactivate_success(
       kTransitionSuccess,
-      lifecycle::transition::TRANSITION_ON_DEACTIVATE_SUCCESS,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_DEACTIVATE_SUCCESS,
       deactivating_state, inactive_state);
   lifecycle_register_transition(transition_on_deactivate_success);
 
   // register transition from deactivating to active
   LifecycleTransition transition_on_deactivate_failure(
       kTransitionFailure,
-      lifecycle::transition::TRANSITION_ON_DEACTIVATE_FAILURE,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_DEACTIVATE_FAILURE,
       deactivating_state, active_state);
   lifecycle_register_transition(transition_on_deactivate_failure);
 
   // register transition from deactivating to errorprocessing
   LifecycleTransition transition_on_deactivate_error(
-      kTransitionError, lifecycle::transition::TRANSITION_ON_DEACTIVATE_ERROR,
+      kTransitionError,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_DEACTIVATE_ERROR,
       deactivating_state, errorprocessing_state);
   lifecycle_register_transition(transition_on_deactivate_error);
 
   // register transition from unconfigured to shuttingdown
   LifecycleTransition transition_unconfigured_shutdown(
-      kShutdownLabel, lifecycle::transition::TRANSITION_UNCONFIGURED_SHUTDOWN,
+      kShutdownLabel,
+      lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN,
       unconfigured_state, shuttingdown_state);
   lifecycle_register_transition(transition_unconfigured_shutdown);
 
   // register transition from inactive to shuttingdown
   LifecycleTransition transition_inactive_shutdown(
-      kShutdownLabel, lifecycle::transition::TRANSITION_INACTIVE_SHUTDOWN,
+      kShutdownLabel,
+      lifecycle_msgs::msg::Transition::TRANSITION_INACTIVE_SHUTDOWN,
       inactive_state, shuttingdown_state);
   lifecycle_register_transition(transition_inactive_shutdown);
 
   // register transition from active to shuttingdown
   LifecycleTransition transition_active_shutdown(
-      kShutdownLabel, lifecycle::transition::TRANSITION_ACTIVE_SHUTDOWN,
-      active_state, shuttingdown_state);
+      kShutdownLabel,
+      lifecycle_msgs::msg::Transition::TRANSITION_ACTIVE_SHUTDOWN, active_state,
+      shuttingdown_state);
   lifecycle_register_transition(transition_active_shutdown);
 
   // register transition from shutting down to finalized
   LifecycleTransition transition_on_shutdown_success(
-      kTransitionSuccess, lifecycle::transition::TRANSITION_ON_SHUTDOWN_SUCCESS,
+      kTransitionSuccess,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_SHUTDOWN_SUCCESS,
       shuttingdown_state, finalized_state);
   lifecycle_register_transition(transition_on_shutdown_success);
 
   // register transition from shutting down to finalized
   LifecycleTransition transition_on_shutdown_failure(
-      kTransitionFailure, lifecycle::transition::TRANSITION_ON_SHUTDOWN_FAILURE,
+      kTransitionFailure,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_SHUTDOWN_FAILURE,
       shuttingdown_state, finalized_state);
   lifecycle_register_transition(transition_on_shutdown_failure);
 
   // register transition from shutting down to errorprocessing
   LifecycleTransition transition_on_shutdown_error(
-      kTransitionError, lifecycle::transition::TRANSITION_ON_SHUTDOWN_ERROR,
+      kTransitionError,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_SHUTDOWN_ERROR,
       shuttingdown_state, errorprocessing_state);
   lifecycle_register_transition(transition_on_shutdown_error);
 
   // register transition from errorprocessing to uncofigured
   LifecycleTransition transition_on_error_success(
-      kTransitionSuccess, lifecycle::transition::TRANSITION_ON_ERROR_SUCCESS,
+      kTransitionSuccess,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_ERROR_SUCCESS,
       errorprocessing_state, unconfigured_state);
   lifecycle_register_transition(transition_on_error_success);
 
   // register transition from errorprocessing to finalized
   LifecycleTransition transition_on_error_failure(
-      kTransitionFailure, lifecycle::transition::TRANSITION_ON_ERROR_FAILURE,
+      kTransitionFailure,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_ERROR_FAILURE,
       errorprocessing_state, finalized_state);
   lifecycle_register_transition(transition_on_error_failure);
 
   // register transition from errorprocessing to finalized
   LifecycleTransition transition_on_error_error(
-      kTransitionError, lifecycle::transition::TRANSITION_ON_ERROR_ERROR,
+      kTransitionError,
+      lifecycle_msgs::msg::Transition::TRANSITION_ON_ERROR_ERROR,
       errorprocessing_state, finalized_state);
   lifecycle_register_transition(transition_on_error_error);
 
-  current_state =
-      lifecycle_get_state(lifecycle::state::PRIMARY_STATE_UNCONFIGURED);
+  current_state = lifecycle_get_state(
+      lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED);
 }

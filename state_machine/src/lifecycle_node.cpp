@@ -11,17 +11,22 @@ namespace lifecycle
   detail::LifecycleState stateFromLabel(const std::string& label)
   {
     static const std::pair<const char*, unsigned int> kMap[] = {
-        {"unknown", lifecycle::state::PRIMARY_STATE_UNKNOWN},
-        {"unconfigured", lifecycle::state::PRIMARY_STATE_UNCONFIGURED},
-        {"inactive", lifecycle::state::PRIMARY_STATE_INACTIVE},
-        {"active", lifecycle::state::PRIMARY_STATE_ACTIVE},
-        {"finalized", lifecycle::state::PRIMARY_STATE_FINALIZED},
-        {"configuring", lifecycle::state::TRANSITION_STATE_CONFIGURING},
-        {"cleaningup", lifecycle::state::TRANSITION_STATE_CLEANINGUP},
-        {"shuttingdown", lifecycle::state::TRANSITION_STATE_SHUTTINGDOWN},
-        {"activating", lifecycle::state::TRANSITION_STATE_ACTIVATING},
-        {"deactivating", lifecycle::state::TRANSITION_STATE_DEACTIVATING},
-        {"errorprocessing", lifecycle::state::TRANSITION_STATE_ERRORPROCESSING},
+        {"unknown", lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN},
+        {"unconfigured",
+         lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED},
+        {"inactive", lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE},
+        {"active", lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE},
+        {"finalized", lifecycle_msgs::msg::State::PRIMARY_STATE_FINALIZED},
+        {"configuring",
+         lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING},
+        {"cleaningup", lifecycle_msgs::msg::State::TRANSITION_STATE_CLEANINGUP},
+        {"shuttingdown",
+         lifecycle_msgs::msg::State::TRANSITION_STATE_SHUTTINGDOWN},
+        {"activating", lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING},
+        {"deactivating",
+         lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING},
+        {"errorprocessing",
+         lifecycle_msgs::msg::State::TRANSITION_STATE_ERRORPROCESSING},
     };
 
     for (const auto& entry : kMap)
@@ -32,8 +37,8 @@ namespace lifecycle
       }
     }
 
-    return detail::LifecycleState("unknown",
-                                  lifecycle::state::PRIMARY_STATE_UNKNOWN);
+    return detail::LifecycleState(
+        "unknown", lifecycle_msgs::msg::State::PRIMARY_STATE_UNKNOWN);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -132,12 +137,12 @@ namespace lifecycle
     auto& current = impl_->getCurrentState();
     uint8_t transition_id;
 
-    if (current.id == lifecycle::state::PRIMARY_STATE_UNCONFIGURED)
+    if (current.id == lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
     {
       transition_id =
           lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN;
     }
-    else if (current.id == lifecycle::state::PRIMARY_STATE_INACTIVE)
+    else if (current.id == lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
     {
       transition_id =
           lifecycle_msgs::msg::Transition::TRANSITION_INACTIVE_SHUTDOWN;
@@ -157,12 +162,12 @@ namespace lifecycle
     auto& current = impl_->getCurrentState();
     uint8_t transition_id;
 
-    if (current.id == lifecycle::state::PRIMARY_STATE_UNCONFIGURED)
+    if (current.id == lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
     {
       transition_id =
           lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN;
     }
-    else if (current.id == lifecycle::state::PRIMARY_STATE_INACTIVE)
+    else if (current.id == lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
     {
       transition_id =
           lifecycle_msgs::msg::Transition::TRANSITION_INACTIVE_SHUTDOWN;
