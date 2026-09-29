@@ -5,12 +5,12 @@
 
 namespace lifecycle
 {
-  constexpr auto kPubStateTopic = "/transition_event";
-  constexpr auto kChangeStateSrv = "/change_state";
-  constexpr auto kGetStateSrv = "/get_state";
-  constexpr auto kGetAvailableStateSrv = "/get_available_state";
-  constexpr auto kGetAvailableTransitionSrv = "/get_available_transitions";
-  constexpr auto kGetTransitionGraphSrv = "/get_transition_graph";
+  std::string kPubStateTopic = "/transition_event";
+  std::string kChangeStateSrv = "/change_state";
+  std::string kGetStateSrv = "/get_state";
+  std::string kGetAvailableStateSrv = "/get_available_state";
+  std::string kGetAvailableTransitionSrv = "/get_available_transitions";
+  std::string kGetTransitionGraphSrv = "/get_transition_graph";
 
   LifecycleNode::LifecycleNodeImpl::LifecycleNodeImpl(
       LifecycleNode* parent_node)
@@ -20,38 +20,69 @@ namespace lifecycle
     state_machine_.initDefaultStateMachine();
     current_state_ = state_machine_.current_state;
 
-    // ── 创建 TransitionEvent 发布器 ────────────────────────────
-    pub_transition_event_ =
-        node_->template create_publisher<TransitionEventMsg>(
-            "~/transition_event", rclcpp::QoS(10));
+    const auto& node_name = parent_node->get_name();
 
-    // ── 创建生命周期服务 ───────────────────────────────────────
-    srv_change_state_ = node_->template create_service<ChangeStateSrv>(
-        "~/change_state",
-        std::bind(&LifecycleNodeImpl::onChangeState, this,
-                  std::placeholders::_1, std::placeholders::_2));
+    {
+      std::string topic_name = node_name + kPubStateTopic;
+      pub_transition_event_ = node_->create_publisher<TransitionEventMsg>(
+          topic_name, rclcpp::QoS(10));
+    }
 
-    srv_get_state_ = node_->template create_service<GetStateSrv>(
-        "~/get_state", std::bind(&LifecycleNodeImpl::onGetState, this,
-                                 std::placeholders::_1, std::placeholders::_2));
+    {
+      std::string service_name = node_name + kChangeStateSrv;
+      srv_change_state_ = node_->create_service<ChangeStateSrv>(
+          service_name,
+          std::bind(&LifecycleNodeImpl::onChangeState, this,
+                    std::placeholders::_1, std::placeholders::_2));
+    }
 
-    srv_get_available_states_ =
-        node_->template create_service<GetAvailableStatesSrv>(
-            "~/get_available_states",
-            std::bind(&LifecycleNodeImpl::onGetAvailableStates, this,
-                      std::placeholders::_1, std::placeholders::_2));
+    {
+      std::string service_name = node_name + kGetStateSrv;
+      srv_get_state_ = node_->create_service<GetStateSrv>(
+          service_name,
+          std::bind(&LifecycleNodeImpl::onGetState, this, std::placeholders::_1,
+                    std::placeholders::_2));
+    }
 
-    srv_get_available_transitions_ =
-        node_->template create_service<GetAvailableTransitionsSrv>(
-            "~/get_available_transitions",
-            std::bind(&LifecycleNodeImpl::onGetAvailableTransitions, this,
-                      std::placeholders::_1, std::placeholders::_2));
+    {
+      std::string service_name = node_name + kGetAvailableStateSrv;
+      srv_get_available_states_ = node_->create_service<GetAvailableStatesSrv>(
+          service_name,
+          std::bind(&LifecycleNodeImpl::onGetAvailableStates, this,
+                    std::placeholders::_1, std::placeholders::_2));
+    }
 
-    srv_get_transition_graph_ =
-        node_->template create_service<GetAvailableTransitionsSrv>(
-            "~/get_transition_graph",
-            std::bind(&LifecycleNodeImpl::onGetTransitionGraph, this,
-                      std::placeholders::_1, std::placeholders::_2));
+    {
+      std::string service_name = node_name + kGetAvailableTransitionSrv;
+      srv_get_available_transitions_ =
+          node_->create_service<GetAvailableTransitionsSrv>(
+              service_name,
+              std::bind(&LifecycleNodeImpl::onGetAvailableTransitions, this,
+                        std::placeholders::_1, std::placeholders::_2));
+    }
+
+    {
+      std::string service_name = node_name + kGetTransitionGraphSrv;
+      srv_get_transition_graph_ =
+          node_->create_service<GetAvailableTransitionsSrv>(
+              service_name,
+              std::bind(&LifecycleNodeImpl::onGetTransitionGraph, this,
+                        std::placeholders::_1, std::placeholders::_2));
+    }
+  }
+
+  void LifecycleNode::LifecycleNodeImpl::registerCallback(
+      uint8_t transition_id,
+      std::function<CallbackReturn(const LifecycleState&)>& cb)
+  {
+    if (!cb)
+    {
+      std::cout << "LifecycleNode::registerCallback: callback is empty"
+                << std::endl;
+      return;
+    }
+
+    cb_map_[transition_id] = cb;
   }
 
   const detail::LifecycleState&
@@ -60,24 +91,11 @@ namespace lifecycle
     return current_state_;
   }
 
-  void LifecycleNode::LifecycleNodeImpl::registerCallback(
-      uint8_t transition_id,
-      std::function<CallbackReturn(const LifecycleState&)> cb)
-  {
-    if (!cb)
-    {
-      return;
-    }
-    cb_map_[transition_id] = std::move(cb);
-  }
-
-  // ── triggerTransition ─────────────────────────────────────
-
   const detail::LifecycleState&
   LifecycleNode::LifecycleNodeImpl::triggerTransition(uint8_t transition_id)
   {
-    CallbackReturn unused;
-    return triggerTransition(transition_id, unused);
+    CallbackReturn error;
+    return triggerTransition(transition_id, error);
   }
 
   const detail::LifecycleState&
@@ -85,15 +103,15 @@ namespace lifecycle
       uint8_t transition_id, CallbackReturn& cb_return_code)
   {
     changeState(transition_id, cb_return_code);
-    return current_state_;
+    return getCurrentState();
   }
 
   const detail::LifecycleState&
   LifecycleNode::LifecycleNodeImpl::triggerTransition(
       const std::string& transition_label)
   {
-    CallbackReturn unused;
-    return triggerTransition(transition_label, unused);
+    CallbackReturn error;
+    return triggerTransition(transition_label, error);
   }
 
   const detail::LifecycleState&
@@ -101,32 +119,34 @@ namespace lifecycle
       const std::string& transition_label, CallbackReturn& cb_return_code)
   {
     std::lock_guard<std::recursive_mutex> lock(mutex_);
+
     std::optional<detail::LifecycleTransition> transition =
         getTransitionByLabel(state_machine_.current_state, transition_label);
     if (transition)
     {
       changeState(static_cast<uint8_t>(transition->id), cb_return_code);
     }
-    return current_state_;
-  }
 
-  // ── changeState（核心：两段式转换） ─────────────────────────
+    return getCurrentState();
+  }
 
   int LifecycleNode::LifecycleNodeImpl::changeState(
       uint8_t transition_id, CallbackReturn& cb_return_code)
   {
-    detail::LifecycleState initial_state;
+    LifecycleState initial_state;
     unsigned int current_state_id;
 
     {
       std::lock_guard<std::recursive_mutex> lock(mutex_);
 
       // 保存上一个主状态
-      initial_state = state_machine_.current_state;
+      initial_state = stateFromLabel(state_machine_.current_state.label);
 
       // Phase A：主状态 → 过渡状态
       if (triggerTransitionById(state_machine_, transition_id) != 0)
       {
+        std::cout << "Unable to start transition {} from current state {}"
+                  << std::endl;
         return -1;
       }
 
@@ -136,9 +156,25 @@ namespace lifecycle
     // 更新内部 current_state_
     current_state_ = state_machine_.current_state;
 
+    auto get_label_for_return_code =
+        [](CallbackReturn cb_return_code) -> const std::string& {
+      auto cb_id = static_cast<uint8_t>(cb_return_code);
+      if (cb_id == lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_SUCCESS)
+      {
+        return kTransitionSuccess;
+      }
+      else if (cb_id ==
+               lifecycle_msgs::msg::Transition::TRANSITION_CALLBACK_FAILURE)
+      {
+        return kTransitionFailure;
+      }
+
+      return kTransitionError;
+    };
+
     // Phase B：执行回调（用 transition state 找 cb_map_）
     cb_return_code = executeCallback(current_state_id, initial_state);
-    const auto& transition_label = labelForReturnCode(cb_return_code);
+    const auto& transition_label = get_label_for_return_code(cb_return_code);
 
     {
       std::lock_guard<std::recursive_mutex> lock(mutex_);
@@ -146,6 +182,8 @@ namespace lifecycle
       // Phase C：过渡状态 → 最终主状态（取决于回调返回值）
       if (triggerTransitionByLabel(state_machine_, transition_label) != 0)
       {
+        std::cout << "Failed to finish transition {}. Current state is now: {}"
+                  << std::endl;
         return -1;
       }
 
@@ -158,13 +196,16 @@ namespace lifecycle
     // Phase D：如果回调返回 ERROR → 进入 error 处理路径
     if (cb_return_code == CallbackReturn::ERROR)
     {
+      std::cout << "Error occurred while doing error handling." << std::endl;
+
       // 此时 current_state_id 已经是 errorprocessing 的状态 ID
       auto error_cb_code = executeCallback(current_state_id, initial_state);
-      const auto& error_label = labelForReturnCode(error_cb_code);
+      const auto& error_label = get_label_for_return_code(error_cb_code);
 
       std::lock_guard<std::recursive_mutex> lock(mutex_);
       if (triggerTransitionByLabel(state_machine_, error_label) != 0)
       {
+        std::cout << "Failed to call cleanup on error state" << std::endl;
         return -1;
       }
     }
@@ -175,27 +216,33 @@ namespace lifecycle
     return 0;
   }
 
-  // ── executeCallback ───────────────────────────────────────
-
-  LifecycleNodeInterface::CallbackReturn
+  LifecycleNode::LifecycleNodeImpl::CallbackReturn
   LifecycleNode::LifecycleNodeImpl::executeCallback(
-      unsigned int cb_id, const detail::LifecycleState& previous_state) const
+      unsigned int cb_id, const LifecycleState& previous_state) const
   {
+    // in case no callback was attached
+    auto cb_success = CallbackReturn::SUCCESS;
+
     auto it = cb_map_.find(static_cast<uint8_t>(cb_id));
     if (it != cb_map_.end())
     {
+      auto callback = it->second;
+
       try
       {
-        return it->second(stateFromLabel(previous_state.label));
+        cb_success = callback(previous_state);
       }
-      catch (const std::exception&)
+      catch (const std::exception& e)
       {
-        return CallbackReturn::ERROR;
+        std::cout << "Caught exception in callback for transition {}"
+                  << std::endl;
+        std::cout << "Original error: {}" << std::endl;
+
+        cb_success = CallbackReturn::ERROR;
       }
     }
 
-    // 没有注册回调 → 默认 SUCCESS
-    return CallbackReturn::SUCCESS;
+    return cb_success;
   }
 
   // ── Service 回调 ───────────────────────────────────────────

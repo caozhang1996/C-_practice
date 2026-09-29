@@ -44,7 +44,7 @@ namespace lifecycle
      */
     void registerCallback(
         uint8_t transition_id,
-        std::function<CallbackReturn(const LifecycleState&)> cb);
+        std::function<CallbackReturn(const LifecycleState&)>& cb);
 
     /**
      * @brief 获得当前状态
@@ -158,8 +158,8 @@ namespace lifecycle
      * @param previous_state
      * @return CallbackReturn
      */
-    CallbackReturn executeCallback(
-        unsigned int cb_id, const detail::LifecycleState& previous_state) const;
+    CallbackReturn executeCallback(unsigned int cb_id,
+                                   const LifecycleState& previous_state) const;
 
     /**
      * @brief 根据 transition id 从 state 找到对应的 transition
@@ -229,8 +229,7 @@ namespace lifecycle
     LifecycleStateMachine state_machine_;
     detail::LifecycleState current_state_;
 
-    std::map<uint8_t,
-             std::function<CallbackReturn(const LifecycleState&)>>
+    std::map<uint8_t, std::function<CallbackReturn(const LifecycleState&)>>
         cb_map_;
 
     LifecycleNode* node_;
