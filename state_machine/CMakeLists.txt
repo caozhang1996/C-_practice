@@ -20,6 +20,7 @@ add_executable(${PROJECT_NAME}
   src/lifecycle_state_machine.cpp
   src/lifecycle_interface.cpp
   src/lifecycle_node.cpp
+  src/lifecycle_node_impl.cpp
   src/main.cpp
 )
 

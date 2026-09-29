@@ -7,55 +7,200 @@
 #include <string>
 
 #include "data_types.h"
-#include "lifecycle_msgs/msg/state.hpp"
-#include "lifecycle_msgs/msg/transition.hpp"
+#include "lifecycle_msgs/msg/transition_event.h"
+#include "lifecycle_msgs/srv/change_state.h"
+#include "lifecycle_msgs/srv/get_available_states.h"
+#include "lifecycle_msgs/srv/get_available_transitions.h"
+#include "lifecycle_msgs/srv/get_state.h"
 #include "lifecycle_state_machine.h"
 #include "state_machine/lifecycle_node.h"
 
 namespace lifecycle
 {
   /// LifecycleNode 的 PIMPL 实现
-  class LifecycleNode::Impl
+  class LifecycleNode::LifecycleNodeImpl final
   {
-   public:
     using CallbackReturn = ifs::LifecycleNodeInterface::CallbackReturn;
 
-    Impl();
-    ~Impl() = default;
+    using CallbackReturn = ifs::LifecycleNodeInterface::CallbackReturn;
 
-    /// 获取当前状态
-    const detail::LifecycleState& getCurrentState() const;
+    using ChangeStateSrv = lifecycle_msgs::srv::ChangeState;
+    using GetStateSrv = lifecycle_msgs::srv::GetState;
+    using GetAvailableStatesSrv = lifecycle_msgs::srv::GetAvailableStates;
+    using GetAvailableTransitionsSrv =
+        lifecycle_msgs::srv::GetAvailableTransitions;
+    using TransitionEventMsg = lifecycle_msgs::msg::TransitionEvent;
 
-    /// 注册对应 transition 的回调
+   public:
+    LifecycleNodeImpl(LifecycleNode* parent_node);
+    ~LifecycleNodeImpl() = default;
+
+    /**
+     * @brief 注册对应 transition 的回调函数
+     *
+     * @param transition_id: transition 对应的 id
+     * @param cb
+     * @return void
+     */
     void registerCallback(
         uint8_t transition_id,
-        std::function<CallbackReturn(const detail::LifecycleState&)> cb);
+        std::function<CallbackReturn(const LifecycleState&)> cb);
 
-    /// 根据转换 ID 触发转换（单参数版）
+    /**
+     * @brief 获得当前状态
+     *
+     * @return const LifecycleState &
+     */
+    const detail::LifecycleState& getCurrentState() const;
+
+    /**
+     * @brief 根据转换 ID 触发转换
+     *
+     * @param transition_id
+     * @return const LifecycleState &
+     */
     const detail::LifecycleState& triggerTransition(uint8_t transition_id);
 
-    /// 根据转换 ID 触发转换（带回传返回码）
+    /**
+     * @brief 根据转换 ID 触发转换
+     *
+     * @param transition_id
+     * @param cb_return_code
+     * @return const LifecycleState &
+     */
     const detail::LifecycleState& triggerTransition(
         uint8_t transition_id, CallbackReturn& cb_return_code);
 
+    /**
+     * @brief 根据转换标签触发转换
+     *
+     * @param transition_label
+     * @return const LifecycleState &
+     */
+    const detail::LifecycleState& triggerTransition(
+        const std::string& transition_label);
+
+    /**
+     * @brief 根据转换标签触发转换
+     *
+     * @param transition_label
+     * @param cb_return_code
+     * @return const LifecycleState &
+     */
+    const detail::LifecycleState& triggerTransition(
+        const std::string& transition_label, CallbackReturn& cb_return_code);
+
    private:
-    /// core：两段式转换
+    LifecycleNodeImpl(const LifecycleNodeImpl&) = delete;
+    LifecycleNodeImpl& operator=(const LifecycleNodeImpl&) = delete;
+
+    /**
+     * @brief srv_change_state_ 的回调函数
+     *
+     * @param req
+     * @param resp
+     */
+    void onChangeState(ChangeStateSrv::Request::ConstSharedPtr req,
+                       ChangeStateSrv::Response::SharedPtr resp);
+
+    /**
+     * @brief srv_get_state_ 的回调函数
+     *
+     * @param req
+     * @param resp
+     */
+    void onGetState(GetStateSrv::Request::ConstSharedPtr req,
+                    GetStateSrv::Response::SharedPtr resp) const;
+
+    /**
+     * @brief srv_get_available_states_ 的回调函数
+     *
+     * @param req
+     * @param resp
+     */
+    void onGetAvailableStates(
+        GetAvailableStatesSrv::Request::ConstSharedPtr req,
+        GetAvailableStatesSrv::Response::SharedPtr resp) const;
+
+    /**
+     * @brief srv_get_available_transitions_ 的回调函数
+     *
+     * @param req
+     * @param resp
+     */
+    void onGetAvailableTransitions(
+        GetAvailableTransitionsSrv::Request::ConstSharedPtr req,
+        GetAvailableTransitionsSrv::Response::SharedPtr resp) const;
+
+    /**
+     * @brief srv_get_transition_graph_ 的回调函数
+     *
+     * @param req
+     * @param resp
+     */
+    void onGetTransitionGraph(
+        GetAvailableTransitionsSrv::Request::ConstSharedPtr req,
+        GetAvailableTransitionsSrv::Response::SharedPtr resp) const;
+
+    /**
+     * @brief 根据 transition_id 执行相应的状态转换
+     *
+     * @param transition_id
+     * @param cb_return_code
+     * @return int
+     */
     int changeState(uint8_t transition_id, CallbackReturn& cb_return_code);
 
-    /// 执行回调
+    /**
+     * @brief 执行 cb_id 对应的回调函数
+     *
+     * @param cb_id
+     * @param previous_state
+     * @return CallbackReturn
+     */
     CallbackReturn executeCallback(
         unsigned int cb_id, const detail::LifecycleState& previous_state) const;
 
-    /// 从当前状态找合法转换
+    /**
+     * @brief 根据 transition id 从 state 找到对应的 transition
+     *
+     * @param state
+     * @param id
+     * @return std::optional<LifecycleTransition>
+     */
     std::optional<detail::LifecycleTransition> getTransitionById(
         const detail::LifecycleState& state, uint8_t id);
+
+    /**
+     * @brief 根据 label 从 state 找到对应的 transition
+     *
+     * @param state
+     * @param label
+     * @return std::optional<LifecycleTransition>
+     */
     std::optional<detail::LifecycleTransition> getTransitionByLabel(
         const detail::LifecycleState& state, const std::string& label);
 
     /// 执行一次 transition（改 current_state + publish）
     int triggerOneTransition(LifecycleStateMachine& state_machine,
                              const detail::LifecycleTransition& transition);
+
+    /**
+     * @brief 根据 transition_id 执行相应的状态转换
+     *
+     * @param state_machine
+     * @param id
+     * @return int
+     */
     int triggerTransitionById(LifecycleStateMachine& state_machine, uint8_t id);
+
+    /**
+     * @brief 根据 label 执行相应的状态转换
+     *
+     * @param state_machine
+     * @param label
+     * @return int
+     */
     int triggerTransitionByLabel(LifecycleStateMachine& state_machine,
                                  const std::string& label);
 
@@ -63,6 +208,23 @@ namespace lifecycle
     static const std::string& labelForReturnCode(CallbackReturn code);
 
    private:
+    using TransitionEventPtr = rosa::Writer<TransitionEventMsg>::SharedPtr;
+    using ChangeStateSrvPtr = rosa::Service<ChangeStateSrv>::SharedPtr;
+    using GetStateSrvPtr = rosa::Service<GetStateSrv>::SharedPtr;
+    using GetAvailableStatesSrvPtr =
+        rosa::Service<GetAvailableStatesSrv>::SharedPtr;
+    using GetAvailableTransitionsSrvPtr =
+        rosa::Service<GetAvailableTransitionsSrv>::SharedPtr;
+    using GetTransitionGraphSrvPtr =
+        rosa::Service<GetAvailableTransitionsSrv>::SharedPtr;
+
+    TransitionEventPtr pub_transition_event_;
+    ChangeStateSrvPtr srv_change_state_;
+    GetStateSrvPtr srv_get_state_;
+    GetAvailableStatesSrvPtr srv_get_available_states_;
+    GetAvailableTransitionsSrvPtr srv_get_available_transitions_;
+    GetTransitionGraphSrvPtr srv_get_transition_graph_;
+
     mutable std::recursive_mutex mutex_;
     LifecycleStateMachine state_machine_;
     detail::LifecycleState current_state_;
@@ -70,5 +232,7 @@ namespace lifecycle
     std::map<uint8_t,
              std::function<CallbackReturn(const detail::LifecycleState&)>>
         cb_map_;
+
+    LifecycleNode* node_;
   };
 }  // namespace lifecycle
