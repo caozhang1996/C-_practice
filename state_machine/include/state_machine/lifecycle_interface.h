@@ -20,13 +20,10 @@
 
 #include "lifecycle_msgs/msg/transition.hpp"
 
-namespace detail
+namespace lifecycle
 {
-  struct LifecycleState;
-}
+  enum class LifecycleState;
 
-namespace ifs
-{
   class LifecycleNodeInterface
   {
    protected:
@@ -47,7 +44,7 @@ namespace ifs
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onConfigure(const detail::LifecycleState& previous_state);
+    virtual CallbackReturn onConfigure(const LifecycleState& previous_state);
 
     /**
      * @brief 用于 cleanup transition 的回调函数
@@ -56,7 +53,7 @@ namespace ifs
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onCleanup(const detail::LifecycleState& previous_state);
+    virtual CallbackReturn onCleanup(const LifecycleState& previous_state);
 
     /**
      * @brief 用于 shutdown transition 的回调函数
@@ -65,7 +62,7 @@ namespace ifs
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onShutdown(const detail::LifecycleState& previous_state);
+    virtual CallbackReturn onShutdown(const LifecycleState& previous_state);
 
     /**
      * @brief 用于 activate transition 的回调函数
@@ -74,7 +71,7 @@ namespace ifs
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onActivate(const detail::LifecycleState& previous_state);
+    virtual CallbackReturn onActivate(const LifecycleState& previous_state);
 
     /**
      * @brief 用于 deactivate transition 的回调函数
@@ -83,7 +80,7 @@ namespace ifs
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onDeactivate(const detail::LifecycleState& previous_state);
+    virtual CallbackReturn onDeactivate(const LifecycleState& previous_state);
 
     /**
      * @brief 用于 error transition 的回调函数
@@ -92,8 +89,8 @@ namespace ifs
      * @return CallbackReturn, default is SUCCESS
      */
 
-    virtual CallbackReturn onError(const detail::LifecycleState& previous_state);
+    virtual CallbackReturn onError(const LifecycleState& previous_state);
 
     virtual ~LifecycleNodeInterface() {}
   };
-}  // namespace ifs
+}  // namespace lifecycle

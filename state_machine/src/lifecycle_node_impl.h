@@ -7,12 +7,14 @@
 #include <string>
 
 #include "data_types.h"
-#include "lifecycle_msgs/msg/transition_event.h"
-#include "lifecycle_msgs/srv/change_state.h"
-#include "lifecycle_msgs/srv/get_available_states.h"
-#include "lifecycle_msgs/srv/get_available_transitions.h"
-#include "lifecycle_msgs/srv/get_state.h"
+#include "lifecycle_msgs/msg/transition_event.hpp"
+#include "lifecycle_msgs/srv/change_state.hpp"
+#include "lifecycle_msgs/srv/get_available_states.hpp"
+#include "lifecycle_msgs/srv/get_available_transitions.hpp"
+#include "lifecycle_msgs/srv/get_state.hpp"
 #include "lifecycle_state_machine.h"
+#include "rclcpp/publisher.hpp"
+#include "rclcpp/service.hpp"
 #include "state_machine/lifecycle_node.h"
 
 namespace lifecycle
@@ -20,9 +22,7 @@ namespace lifecycle
   /// LifecycleNode 的 PIMPL 实现
   class LifecycleNode::LifecycleNodeImpl final
   {
-    using CallbackReturn = ifs::LifecycleNodeInterface::CallbackReturn;
-
-    using CallbackReturn = ifs::LifecycleNodeInterface::CallbackReturn;
+    using CallbackReturn = LifecycleNodeInterface::CallbackReturn;
 
     using ChangeStateSrv = lifecycle_msgs::srv::ChangeState;
     using GetStateSrv = lifecycle_msgs::srv::GetState;
@@ -208,15 +208,15 @@ namespace lifecycle
     static const std::string& labelForReturnCode(CallbackReturn code);
 
    private:
-    using TransitionEventPtr = rosa::Writer<TransitionEventMsg>::SharedPtr;
-    using ChangeStateSrvPtr = rosa::Service<ChangeStateSrv>::SharedPtr;
-    using GetStateSrvPtr = rosa::Service<GetStateSrv>::SharedPtr;
+    using TransitionEventPtr = rclcpp::Publisher<TransitionEventMsg>::SharedPtr;
+    using ChangeStateSrvPtr = rclcpp::Service<ChangeStateSrv>::SharedPtr;
+    using GetStateSrvPtr = rclcpp::Service<GetStateSrv>::SharedPtr;
     using GetAvailableStatesSrvPtr =
-        rosa::Service<GetAvailableStatesSrv>::SharedPtr;
+        rclcpp::Service<GetAvailableStatesSrv>::SharedPtr;
     using GetAvailableTransitionsSrvPtr =
-        rosa::Service<GetAvailableTransitionsSrv>::SharedPtr;
+        rclcpp::Service<GetAvailableTransitionsSrv>::SharedPtr;
     using GetTransitionGraphSrvPtr =
-        rosa::Service<GetAvailableTransitionsSrv>::SharedPtr;
+        rclcpp::Service<GetAvailableTransitionsSrv>::SharedPtr;
 
     TransitionEventPtr pub_transition_event_;
     ChangeStateSrvPtr srv_change_state_;
@@ -230,7 +230,7 @@ namespace lifecycle
     detail::LifecycleState current_state_;
 
     std::map<uint8_t,
-             std::function<CallbackReturn(const detail::LifecycleState&)>>
+             std::function<CallbackReturn(const LifecycleState&)>>
         cb_map_;
 
     LifecycleNode* node_;

@@ -7,13 +7,10 @@
 namespace lifecycle
 {
   LifecycleNode::LifecycleNode(const std::string& node_name,
-                               const NodeOptions& options)
-      : Node(node_name, options)
+                               const rclcpp::NodeOptions& options)
+      : Node(node_name, options),
+        impl_(std::make_unique<LifecycleNodeImpl>(this))
   {
-    impl_ = LifecycleNodeImpl::make_unique(this);
-
-    impl_ = std::make_shared<LifecycleNodeImpl>();
-
     registerOnConfigure(std::bind(&LifecycleNodeInterface::onConfigure, this,
                                   std::placeholders::_1));
     registerOnCleanup(std::bind(&LifecycleNodeInterface::onCleanup, this,

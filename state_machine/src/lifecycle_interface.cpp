@@ -1,41 +1,41 @@
 #include "state_machine/lifecycle_interface.h"
 
-namespace ifs
+namespace lifecycle
 {
   LifecycleNodeInterface::CallbackReturn LifecycleNodeInterface::onConfigure(
-      const detail::LifecycleState &)
+      const LifecycleState &)
   {
     return LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   LifecycleNodeInterface::CallbackReturn LifecycleNodeInterface::onCleanup(
-      const detail::LifecycleState &)
+      const LifecycleState &)
   {
     return LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   LifecycleNodeInterface::CallbackReturn LifecycleNodeInterface::onShutdown(
-      const detail::LifecycleState &)
+      const LifecycleState &)
   {
     return LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   LifecycleNodeInterface::CallbackReturn LifecycleNodeInterface::onActivate(
-      const detail::LifecycleState &)
+      const LifecycleState &)
   {
     return LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   LifecycleNodeInterface::CallbackReturn LifecycleNodeInterface::onDeactivate(
-      const detail::LifecycleState &)
+      const LifecycleState &)
   {
     return LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   LifecycleNodeInterface::CallbackReturn LifecycleNodeInterface::onError(
-      const detail::LifecycleState &)
+      const LifecycleState &)
   {
     return LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
-}  // namespace ifs
+}  // namespace lifecycle

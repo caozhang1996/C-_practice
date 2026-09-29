@@ -13,10 +13,12 @@ foreach(_ros_dir /opt/ros/humble /opt/ros/iron /opt/ros/rolling /opt/ros/jazzy)
   endif()
 endforeach()
 find_package(lifecycle_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
 
 # state_machine
 add_executable(${PROJECT_NAME}
   src/data_types.cpp
+  src/lifecycle.cpp
   src/lifecycle_state_machine.cpp
   src/lifecycle_interface.cpp
   src/lifecycle_node.cpp
@@ -32,6 +34,7 @@ target_include_directories(${PROJECT_NAME}  PUBLIC
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
   lifecycle_msgs::lifecycle_msgs
+  rclcpp::rclcpp
 )
 
 install(TARGETS ${PROJECT_NAME}

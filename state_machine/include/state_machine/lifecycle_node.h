@@ -13,13 +13,13 @@
 namespace lifecycle
 {
   /// 生命周期节点 — 提供 configure/activate/... 入口 + 回调注册
-  class LifecycleNode : public rclcpp::Node, public ifs::LifecycleNodeInterface
+  class LifecycleNode : public rclcpp::Node, public LifecycleNodeInterface
   {
    public:
-    using CallbackReturn = ifs::LifecycleNodeInterface::CallbackReturn;
+    using CallbackReturn = LifecycleNodeInterface::CallbackReturn;
 
     LifecycleNode(const std::string& node_name,
-                  const NodeOptions& options = NodeOptions());
+                  const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
 
     virtual ~LifecycleNode();
 
