@@ -27,8 +27,9 @@ namespace lifecycle
     const detail::LifecycleState& getCurrentState() const;
 
     /// 注册对应 transition 的回调
-    void registerCallback(uint8_t transition_id,
-                          std::function<CallbackReturn(const detail::LifecycleState&)> cb);
+    void registerCallback(
+        uint8_t transition_id,
+        std::function<CallbackReturn(const detail::LifecycleState&)> cb);
 
     /// 根据转换 ID 触发转换（单参数版）
     const detail::LifecycleState& triggerTransition(uint8_t transition_id);
@@ -43,8 +44,7 @@ namespace lifecycle
 
     /// 执行回调
     CallbackReturn executeCallback(
-        unsigned int cb_id,
-        const detail::LifecycleState& previous_state) const;
+        unsigned int cb_id, const detail::LifecycleState& previous_state) const;
 
     /// 从当前状态找合法转换
     std::optional<detail::LifecycleTransition> getTransitionById(
@@ -67,7 +67,8 @@ namespace lifecycle
     LifecycleStateMachine state_machine_;
     detail::LifecycleState current_state_;
 
-    std::map<uint8_t, std::function<CallbackReturn(const detail::LifecycleState&)>>
+    std::map<uint8_t,
+             std::function<CallbackReturn(const detail::LifecycleState&)>>
         cb_map_;
   };
 }  // namespace lifecycle

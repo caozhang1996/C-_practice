@@ -32,7 +32,8 @@ namespace lifecycle
       }
     }
 
-    return detail::LifecycleState("unknown", lifecycle::state::PRIMARY_STATE_UNKNOWN);
+    return detail::LifecycleState("unknown",
+                                  lifecycle::state::PRIMARY_STATE_UNKNOWN);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -42,16 +43,20 @@ namespace lifecycle
   LifecycleNode::LifecycleNode() : impl_(std::make_unique<Impl>())
   {
     // 将虚函数回调注册到 cb_map_
-    registerOnConfigure(
-        [this](const detail::LifecycleState& s) { return this->onConfigure(s); });
+    registerOnConfigure([this](const detail::LifecycleState& s) {
+      return this->onConfigure(s);
+    });
     registerOnCleanup(
         [this](const detail::LifecycleState& s) { return this->onCleanup(s); });
-    registerOnShutdown(
-        [this](const detail::LifecycleState& s) { return this->onShutdown(s); });
-    registerOnActivate(
-        [this](const detail::LifecycleState& s) { return this->onActivate(s); });
-    registerOnDeactivate(
-        [this](const detail::LifecycleState& s) { return this->onDeactivate(s); });
+    registerOnShutdown([this](const detail::LifecycleState& s) {
+      return this->onShutdown(s);
+    });
+    registerOnActivate([this](const detail::LifecycleState& s) {
+      return this->onActivate(s);
+    });
+    registerOnDeactivate([this](const detail::LifecycleState& s) {
+      return this->onDeactivate(s);
+    });
     registerOnError(
         [this](const detail::LifecycleState& s) { return this->onError(s); });
   }
@@ -70,7 +75,8 @@ namespace lifecycle
     return stateFromLabel(state.label);
   }
 
-  detail::LifecycleState LifecycleNode::configure(CallbackReturn& cb_return_code)
+  detail::LifecycleState LifecycleNode::configure(
+      CallbackReturn& cb_return_code)
   {
     auto state = impl_->triggerTransition(
         lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE, cb_return_code);
@@ -112,7 +118,8 @@ namespace lifecycle
     return stateFromLabel(state.label);
   }
 
-  detail::LifecycleState LifecycleNode::deactivate(CallbackReturn& cb_return_code)
+  detail::LifecycleState LifecycleNode::deactivate(
+      CallbackReturn& cb_return_code)
   {
     auto state = impl_->triggerTransition(
         lifecycle_msgs::msg::Transition::TRANSITION_DEACTIVATE, cb_return_code);
@@ -127,15 +134,18 @@ namespace lifecycle
 
     if (current.id == lifecycle::state::PRIMARY_STATE_UNCONFIGURED)
     {
-      transition_id = lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN;
+      transition_id =
+          lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN;
     }
     else if (current.id == lifecycle::state::PRIMARY_STATE_INACTIVE)
     {
-      transition_id = lifecycle_msgs::msg::Transition::TRANSITION_INACTIVE_SHUTDOWN;
+      transition_id =
+          lifecycle_msgs::msg::Transition::TRANSITION_INACTIVE_SHUTDOWN;
     }
     else
     {
-      transition_id = lifecycle_msgs::msg::Transition::TRANSITION_ACTIVE_SHUTDOWN;
+      transition_id =
+          lifecycle_msgs::msg::Transition::TRANSITION_ACTIVE_SHUTDOWN;
     }
 
     auto state = impl_->triggerTransition(transition_id);
@@ -149,15 +159,18 @@ namespace lifecycle
 
     if (current.id == lifecycle::state::PRIMARY_STATE_UNCONFIGURED)
     {
-      transition_id = lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN;
+      transition_id =
+          lifecycle_msgs::msg::Transition::TRANSITION_UNCONFIGURED_SHUTDOWN;
     }
     else if (current.id == lifecycle::state::PRIMARY_STATE_INACTIVE)
     {
-      transition_id = lifecycle_msgs::msg::Transition::TRANSITION_INACTIVE_SHUTDOWN;
+      transition_id =
+          lifecycle_msgs::msg::Transition::TRANSITION_INACTIVE_SHUTDOWN;
     }
     else
     {
-      transition_id = lifecycle_msgs::msg::Transition::TRANSITION_ACTIVE_SHUTDOWN;
+      transition_id =
+          lifecycle_msgs::msg::Transition::TRANSITION_ACTIVE_SHUTDOWN;
     }
 
     auto state = impl_->triggerTransition(transition_id, cb_return_code);
@@ -170,35 +183,40 @@ namespace lifecycle
       std::function<CallbackReturn(const detail::LifecycleState&)> fcn)
   {
     impl_->registerCallback(
-        lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING, std::move(fcn));
+        lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING,
+        std::move(fcn));
   }
 
   void LifecycleNode::registerOnCleanup(
       std::function<CallbackReturn(const detail::LifecycleState&)> fcn)
   {
     impl_->registerCallback(
-        lifecycle_msgs::msg::State::TRANSITION_STATE_CLEANINGUP, std::move(fcn));
+        lifecycle_msgs::msg::State::TRANSITION_STATE_CLEANINGUP,
+        std::move(fcn));
   }
 
   void LifecycleNode::registerOnShutdown(
       std::function<CallbackReturn(const detail::LifecycleState&)> fcn)
   {
     impl_->registerCallback(
-        lifecycle_msgs::msg::State::TRANSITION_STATE_SHUTTINGDOWN, std::move(fcn));
+        lifecycle_msgs::msg::State::TRANSITION_STATE_SHUTTINGDOWN,
+        std::move(fcn));
   }
 
   void LifecycleNode::registerOnActivate(
       std::function<CallbackReturn(const detail::LifecycleState&)> fcn)
   {
     impl_->registerCallback(
-        lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING, std::move(fcn));
+        lifecycle_msgs::msg::State::TRANSITION_STATE_ACTIVATING,
+        std::move(fcn));
   }
 
   void LifecycleNode::registerOnDeactivate(
       std::function<CallbackReturn(const detail::LifecycleState&)> fcn)
   {
     impl_->registerCallback(
-        lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING, std::move(fcn));
+        lifecycle_msgs::msg::State::TRANSITION_STATE_DEACTIVATING,
+        std::move(fcn));
   }
 
   void LifecycleNode::registerOnError(
@@ -256,7 +274,7 @@ namespace lifecycle
   // ── changeState（核心：两段式转换） ─────────────────────────
 
   int LifecycleNode::Impl::changeState(uint8_t transition_id,
-                                        CallbackReturn& cb_return_code)
+                                       CallbackReturn& cb_return_code)
   {
     detail::LifecycleState initial_state;
     unsigned int current_state_id;
@@ -302,8 +320,7 @@ namespace lifecycle
     if (cb_return_code == CallbackReturn::ERROR)
     {
       // 此时 current_state_id 已经是 errorprocessing 的状态 ID
-      auto error_cb_code =
-          executeCallback(current_state_id, initial_state);
+      auto error_cb_code = executeCallback(current_state_id, initial_state);
       const auto& error_label = labelForReturnCode(error_cb_code);
 
       std::lock_guard<std::recursive_mutex> lock(mutex_);
@@ -345,7 +362,7 @@ namespace lifecycle
 
   std::optional<detail::LifecycleTransition>
   LifecycleNode::Impl::getTransitionById(const detail::LifecycleState& state,
-                                          uint8_t id)
+                                         uint8_t id)
   {
     for (const auto& t : state.valid_transitions)
     {
@@ -359,7 +376,7 @@ namespace lifecycle
 
   std::optional<detail::LifecycleTransition>
   LifecycleNode::Impl::getTransitionByLabel(const detail::LifecycleState& state,
-                                              const std::string& label)
+                                            const std::string& label)
   {
     for (const auto& t : state.valid_transitions)
     {
