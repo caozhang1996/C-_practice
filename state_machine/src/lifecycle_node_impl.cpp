@@ -145,8 +145,10 @@ namespace lifecycle
       // Phase A：主状态 → 过渡状态
       if (triggerTransitionById(state_machine_, transition_id) != 0)
       {
-        std::cout << "Unable to start transition {} from current state {}"
-                  << std::endl;
+        std::cout << "Unable to start transition "
+                  << static_cast<unsigned int>(transition_id)
+                  << " from current state "
+                  << state_machine_.current_state.label << std::endl;
         return -1;
       }
 
@@ -182,8 +184,9 @@ namespace lifecycle
       // Phase C：过渡状态 → 最终主状态（取决于回调返回值）
       if (triggerTransitionByLabel(state_machine_, transition_label) != 0)
       {
-        std::cout << "Failed to finish transition {}. Current state is now: {}"
-                  << std::endl;
+        std::cout << "Failed to finish transition " << transition_label
+                  << ". Current state is now: "
+                  << state_machine_.current_state.label << std::endl;
         return -1;
       }
 
@@ -234,9 +237,9 @@ namespace lifecycle
       }
       catch (const std::exception& e)
       {
-        std::cout << "Caught exception in callback for transition {}"
+        std::cout << "Caught exception in callback for transition " << cb_id
                   << std::endl;
-        std::cout << "Original error: {}" << std::endl;
+        std::cout << "Original error: " << e.what() << std::endl;
 
         cb_success = CallbackReturn::ERROR;
       }

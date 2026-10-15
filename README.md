@@ -14,7 +14,13 @@ bash build.sh
 bash build.sh practice
 bash build.sh design_patterns
 bash build.sh template_practice
-bash build.sh state_machine
+
+# state_machine 是 ROS2 ament 包，用 colcon 构建（依赖 ROS2 环境）
+cd state_machine
+source /opt/ros/humble/setup.bash   # 若无 ROS2 请先安装
+colcon build
+source install/setup.bash
+ros2 run state_machine lifecycle_node_test   # 运行状态机测试
 
 # 编译单个可执行文件
 bash build.sh practice sequence_node
@@ -28,7 +34,7 @@ bash build.sh design_patterns observer
 | [Design Patterns](design_patterns/README.md) | GoF 23 种设计模式的 C++ 实现 | `bash build.sh design_patterns` |
 | [C++ 语法与基本功](practice/README.md) | 智能指针、多线程、内存管理、C++ 新特性 | `bash build.sh practice` |
 | [模板练习](template_practice/README.md) | 从基础模板到 C++20 Concepts 的系统练习 | `bash build.sh template_practice` |
-| [状态机](state_machine/README.md) | ROS2 Lifecycle 风格的状态机实现 | `bash build.sh state_machine` |
+| [状态机](state_machine/README.md) | ROS2 Lifecycle 风格的状态机实现（ament 包，动态库 + 测试） | `colcon build --packages-select state_machine` |
 
 ## 项目结构
 
@@ -46,8 +52,8 @@ bash build.sh design_patterns observer
 ├── state_machine/               # 模块四：状态机
 │   └── README.md
 │
-├── build/                       # 构建产物（自动生成）
-└── install/                     # 安装目录（自动生成）
+├── build/                       # 构建产物（自动生成；state_machine 的产物在 install/ 下）
+└── install/                     # 安装目录（自动生成，build.sh 与 colcon 共用）
 ```
 
 ## 构建产物
@@ -55,11 +61,12 @@ bash build.sh design_patterns observer
 ```
 install/
 ├── lib/
-│   ├── design_patterns/        # 设计模式可执行文件
-│   ├── practice/               # 语法练习可执行文件
-│   ├── template_practice/      # 模板练习可执行文件
-│   └── state_machine/          # 状态机可执行文件
-└── include/                    # 头文件
+│   ├── design_patterns/        # 设计模式可执行文件（build.sh）
+│   ├── practice/               # 语法练习可执行文件（build.sh）
+│   ├── template_practice/      # 模板练习可执行文件（build.sh）
+│   ├── libstate_machine.so     # 状态机动态库（colcon）
+│   └── state_machine/          # 状态机测试程序 lifecycle_node_test（colcon）
+└── include/                    # 头文件（含 state_machine/）
 ```
 
 ## 编译器与标准
