@@ -8,8 +8,6 @@
 #   ./build.sh template_practice        只编译模板练习
 #   ./build.sh state_machine            只编译状态机
 #   ./build.sh practice sequence_node   只编译 practice 下的 sequence_node
-#   ./build.sh state_machine            打印 state_machine 的 colcon 构建指引
-#                                        （state_machine 已是 ROS2 ament 包，用 colcon 构建）
 #
 # 首次运行自动创建 build/ 目录。
 
@@ -59,28 +57,12 @@ case "$PROJECT" in
       cmake --install . --component "${PROJECT}_dev" 2>/dev/null || true
     fi
     ;;
-  state_machine)
-    # state_machine 已改为 ROS2 ament 包，由 colcon 独立构建
-    echo "state_machine 已是 ROS2 ament 包，请在 state_machine/ 目录内用 colcon 构建："
-    echo ""
-    echo "  # 依赖 ROS2 环境"
-    echo "  source /opt/ros/humble/setup.bash"
-    echo ""
-    echo "  # 进入包目录并构建（动态库 libstate_machine.so + 测试程序）"
-    echo "  cd state_machine"
-    echo "  colcon build"
-    echo ""
-    echo "  # 生效 + 运行测试"
-    echo "  source install/setup.bash"
-    echo "  ros2 run state_machine lifecycle_node_test"
-    ;;
   *)
-    echo "用法: $0 [all|practice|design_patterns|template_practice|state_machine] [target名]"
+    echo "用法: $0 [all|practice|design_patterns|template_practice] [target名]"
     echo "示例:"
     echo "  $0                         # 编译全部"
     echo "  $0 practice                # 只编译 practice"
     echo "  $0 practice sequence_node  # 只编译 sequence_node"
-    echo "  $0 state_machine           # 打印 colcon 构建指引（源码见 state_machine/README.md）"
     exit 1
     ;;
 esac
